@@ -1,4 +1,3 @@
-// app/(dashboard)/layout.tsx
 import React from 'react'
 import DashboardHeader from '@/components/dashboard/Header'
 import DashboardSidebar from '@/components/dashboard/Sidebar'

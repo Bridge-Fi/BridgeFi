@@ -1,11 +1,11 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
+import "./globals.css"
+import Header from "@/components/dashboard/Header"
+import Footer from "@/components/dashboard/footer"
+import type { Metadata } from "next"
 
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata = {
-  title: 'BridgeFi',
-  description: 'Your bridge to a new future in the USA',
+export const metadata: Metadata = {
+  title: "BridgeFi",
+  description: "Your bridge to a new future in the USA",
 }
 
 export default function RootLayout({
@@ -15,9 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="bg-white">
+        <Header />
         {children}
-      </body>2
+        <Footer />
+      </body>
     </html>
   )
 }
