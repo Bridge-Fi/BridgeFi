@@ -11,7 +11,7 @@ import Bridge from "@/public/images/hero-bridge.jpg"
 import { GoLaw, GoGraph } from "react-icons/go"
 import { FaBuilding } from "react-icons/fa"
 
-export default function Home() {
+const page = ()  =>{
   return (
     <main className="min-h-screen bg-gray-50 w-full">
       <section className="w-full bg-white py-16">
@@ -65,6 +65,9 @@ export default function Home() {
     </main>
   )
 }
+
+
+export default page
 
 function ServiceCard({
   title,

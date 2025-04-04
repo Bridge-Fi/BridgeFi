@@ -6,13 +6,9 @@ import { FiZap, FiGlobe } from "react-icons/fi"
 import { IconType } from "react-icons"
 import avatar from "@/public/images/avatar.jpeg"
 import Bridge from "@/public/images/hero-bridge.jpg"
-import Layout from "@/app/layout"
-
-
 
 export default function AboutPage() {
   return (
-    <Layout>
     <main className="bg-white">
       <section className="text-center bg-blue-50 py-10 px-4">
         <h1 className="text-4xl font-bold mb-3">About BridgeFi</h1>
@@ -59,7 +55,7 @@ export default function AboutPage() {
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
           Dedicated professionals working together to revolutionize global immigration.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="flex justify-center gap-6 max-w-6xl mx-auto">
           <TeamCard
             name="Arbes Avdiaj"
             title="Co-Founder"
@@ -70,7 +66,7 @@ export default function AboutPage() {
             name="Anxhela Teli"
             title="Co-Founder"
             image={avatar}
-            bio="Believer in data-driven solutions and agile methodologies."
+            bio="Passionate about innovation and personal growth."
           />
         </div>
       </section>
@@ -99,7 +95,6 @@ export default function AboutPage() {
         </div>
       </section>
     </main>
-    </Layout>
   )
 }
 
