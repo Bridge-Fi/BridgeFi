@@ -1,9 +1,47 @@
-import { IoArrowBack } from "react-icons/io5"
-import { Button } from "@/components/ui/button"
-import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa"
-import Link from "next/link"
+"use client";
 
-export  function Login() {
+import { IoArrowBack } from "react-icons/io5";
+import { Button } from "@/components/ui/button";
+import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import axios from "axios";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await axios.post(
+        "/users/login",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      // Store JWT token
+      localStorage.setItem("token", data.access_token);
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } catch (error: any) {
+      setError(
+        error.response?.data?.message || error.message || "Login failed"
+      );
+    }
+  };
 
   return (
     <main className="flex min-h-screen w-full">
@@ -19,8 +57,8 @@ export  function Login() {
         <div className="relative z-10 text-center text-white max-w-md px-8">
           <h1 className="mb-4 text-3xl font-bold">Welcome to Our Platform</h1>
           <p className="text-lg">
-            Streamline your workflow and boost productivity
-            with our innovative solutions.
+            Streamline your workflow and boost productivity with our innovative
+            solutions.
           </p>
         </div>
       </div>
@@ -35,13 +73,20 @@ export  function Login() {
 
         <div className="w-full max-w-md rounded-lg bg-white px-6 py-8 shadow-lg sm:px-10">
           <div className="mb-8 text-center">
-            <h2 className="text-2xl font-semibold text-gray-900">Log in to your account</h2>
-            <p className="mt-2 text-sm text-gray-600">Welcome back! Please enter your details.</p>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Log in to your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Welcome back! Please enter your details.
+            </p>
           </div>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1">
@@ -53,12 +98,17 @@ export  function Login() {
                   required
                   className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400
                              focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="mt-1">
@@ -70,9 +120,15 @@ export  function Login() {
                   required
                   className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400
                              focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
+
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
 
             <Button
               type="submit"
@@ -89,7 +145,9 @@ export  function Login() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 
@@ -123,12 +181,15 @@ export  function Login() {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <a href="/sign-up" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link
+              href="/sign-up"
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
     </main>
-  )
+  );
 }
