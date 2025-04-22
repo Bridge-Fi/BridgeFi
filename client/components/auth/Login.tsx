@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { UserAPI } from "@/app/api/UserAPI";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,26 +19,19 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await axios.post(
-        "/users/login",
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await UserAPI.login(email, password);
+      const user = await UserAPI.getLoggedUser();
 
-      const data = response.data;
-
-      // Store JWT token
-      localStorage.setItem("token", data.access_token);
-
-      // Redirect to dashboard
-      router.push("/dashboard");
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else if (user.role === "lawyer") {
+        router.push("/lawyer");
+      } else {
+        router.push("/");
+      }
     } catch (error: any) {
       setError(
-        error.response?.data?.message || error.message || "Login failed"
+        error.response?.user?.message || error.message || "Login failed"
       );
     }
   };

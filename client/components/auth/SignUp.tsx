@@ -6,7 +6,7 @@ import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { UsesAPI } from "@/app/api/UserAPI";
+import { UserAPI } from "@/app/api/UserAPI";
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState("");
@@ -20,7 +20,7 @@ export default function SignUpPage() {
     e.preventDefault();
     setError("");
 
-    await UsesAPI.register({
+    await UserAPI.register({
       firstName: firstName,
       lastName: lastName,
       email: email,

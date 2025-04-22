@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import {
   Injectable,
   ConflictException,
@@ -9,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -17,12 +17,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(
-    email: string,
-    password: string,
-  ): Promise<Omit<User, 'password'>> {
+  async validateUser(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);
-
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -36,10 +32,12 @@ export class AuthService {
     return result;
   }
 
-  async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
-    const payload = { email: user.email, sub: user.id };
+  login(user: Omit<User, 'password'>) {
+    const payload = { email: user.email, sub: user.id, role: user.role };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+      }),
     };
   }
 
@@ -63,5 +61,22 @@ export class AuthService {
 
     const { password: _, ...result } = newUser;
     return result;
+  }
+
+  async getLoggedUser(req: Request) {
+    const token = req.cookies?.access_token;
+    if (!token) {
+      throw new UnauthorizedException('No authentication token found');
+    }
+
+    const decoded = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    if (!decoded) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    return decoded;
   }
 }
