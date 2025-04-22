@@ -17,17 +17,18 @@ const jwtConfig = {
     forwardRef(() => UsersModule), // ✅ Use forwardRef to solve circular import
     PassportModule,
     JwtModule.register({
-      secret: jwtConfig.secret,
+      global: true,
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: jwtConfig.expiresIn },
     }),
   ],
   providers: [
     AuthService,
-    LocalStrategy,
-    {
-      provide: 'JWT_CONFIG',
-      useValue: jwtConfig,
-    },
+    // LocalStrategy,
+    // {
+    //   provide: 'JWT_CONFIG',
+    //   useValue: jwtConfig,
+    // },
     JwtStrategy,
   ],
   exports: [AuthService],

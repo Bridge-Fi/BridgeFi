@@ -7,12 +7,16 @@ import {
   ConflictException,
   Logger,
   UnauthorizedException,
+  Res,
+  Get,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
+import { Request, Response } from 'express';
+import { GetRequest } from 'src/auth/get-requested.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -46,10 +50,11 @@ export class UsersController {
   }
 
   @Post('login')
-  @UsePipes(new ValidationPipe({ transform: true }))
+  // @UsePipes(new ValidationPipe({ transform: true }))
   async login(
     @Body() loginDto: LoginUserDto,
-  ): Promise<{ access_token: string }> {
+    @Res({ passthrough: true }) res: Response,
+  ) {
     this.logger.log(`Login attempt for: ${loginDto.email}`);
 
     const user = await this.authService.validateUser(
@@ -60,7 +65,30 @@ export class UsersController {
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
+    const { access_token } = this.authService.login(user);
 
-    return this.authService.login(user);
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+
+    res.send({ message: 'Login successful', user: user });
+  }
+
+  @Get('get-logged-user')
+  async getLoggedUser(@GetRequest() req: Request) {
+    try {
+      const decoded = await this.authService.getLoggedUser(req);
+      return decoded;
+    } catch {
+      return null;
+    }
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('access_token');
+    return { message: 'Logout successful' };
   }
 }
