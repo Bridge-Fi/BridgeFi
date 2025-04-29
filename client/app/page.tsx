@@ -1,17 +1,17 @@
-// app/page.tsx
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card"
-import Bridge from "@/public/images/hero-bridge.jpg"
-import { GoLaw, GoGraph } from "react-icons/go"
-import { FaBuilding } from "react-icons/fa"
+} from "@/components/ui/card";
+import Bridge from "@/public/images/hero-bridge.jpg";
+import { GoLaw, GoGraph } from "react-icons/go";
+import { FaBuilding } from "react-icons/fa";
+import Link from "next/link";
 
-const page = ()  =>{
+const page = () => {
   return (
     <main className="min-h-screen bg-gray-50 w-full">
       <section className="w-full bg-white py-16">
@@ -21,10 +21,13 @@ const page = ()  =>{
               Your Bridge to a New Future in the USA
             </h2>
             <p className="text-gray-600">
-              Navigate your journey to success with expert guidance, 
-              legal support, and financial solutions tailored for international professionals.
+              Navigate your journey to success with expert guidance, legal
+              support, and financial solutions tailored for international
+              professionals.
             </p>
-            <Button className="w-fit">Get Started</Button>
+            <Link href="/sign-up" className="w-fit">
+              <Button className="w-fit">Get Started</Button>
+            </Link>
           </div>
           <div className="flex flex-row-reverse">
             <Image
@@ -63,20 +66,19 @@ const page = ()  =>{
         </div>
       </section>
     </main>
-  )
-}
+  );
+};
 
-
-export default page
+export default page;
 
 function ServiceCard({
   title,
   description,
   Icon,
 }: {
-  title: string
-  description: string
-  Icon: React.ComponentType<{ size?: number; className?: string }>
+  title: string;
+  description: string;
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
 }) {
   return (
     <Card className="shadow-sm">
@@ -90,5 +92,5 @@ function ServiceCard({
         </div>
       </CardHeader>
     </Card>
-  )
+  );
 }

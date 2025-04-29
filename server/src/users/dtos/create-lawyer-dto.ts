@@ -1,18 +1,45 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsInt,
+} from 'class-validator';
 
 export class CreateLawyerDto {
-  @IsString()
   @IsNotEmpty()
-  firstName: string;
-
   @IsString()
-  @IsNotEmpty()
-  lastName: string;
+  fullName: string;
 
-  @IsEmail()
+  @IsNotEmpty()
+  @IsString()
   email: string;
 
-  @IsString()
   @IsNotEmpty()
-  password: string;
+  @IsString()
+  phoneNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  legalExperience: string;
+
+  @IsNotEmpty()
+  @IsString()
+  education: string;
+
+  @IsNotEmpty()
+  @IsString()
+  barNumber: string;
+
+  @IsArray()
+  @IsNotEmpty({ message: 'Visa specialties are required' })
+  visaSpecialties: string[];
+
+  @IsOptional()
+  @IsInt()
+  yearsOfExperience?: number;
+
+  @IsOptional()
+  @IsString()
+  lawFirm?: string;
 }

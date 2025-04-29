@@ -1,10 +1,14 @@
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
-  const pathName = usePathname()
-      if (!(pathName.includes("/sign-up")) && !(pathName.includes("/login"))) {
+  const pathName = usePathname();
+  if (
+    !pathName.includes("/sign-up") &&
+    !pathName.includes("/login") &&
+    !pathName.includes("/admin")
+  ) {
     return (
       <footer className="bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto py-10 px-6 grid grid-cols-2 sm:grid-cols-4 gap-8">
@@ -33,7 +37,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-  
+
           <div>
             <h2 className="font-bold text-lg mb-4">Product</h2>
             <ul className="space-y-2 text-sm">
@@ -54,7 +58,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-  
+
           <div>
             <h2 className="font-bold text-lg mb-4">Company</h2>
             <ul className="space-y-2 text-sm">
@@ -75,7 +79,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-  
+
           <div>
             <h2 className="font-bold text-lg mb-4">Support</h2>
             <ul className="space-y-2 text-sm">
@@ -97,18 +101,15 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-  
+
         <div className="border-t border-gray-700">
           <div className="max-w-6xl mx-auto py-6 px-6 text-center text-sm text-gray-400">
             © 2025 BridgeFi. All rights reserved.
           </div>
         </div>
       </footer>
-    )
+    );
   } else {
-
-    return null
+    return null;
   }
-  
-  
 }

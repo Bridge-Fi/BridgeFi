@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
   Res,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
@@ -17,6 +18,7 @@ import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { Request, Response } from 'express';
 import { GetRequest } from 'src/auth/get-requested.decorator';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -87,8 +89,13 @@ export class UsersController {
   }
 
   @Post('logout')
+  @UseGuards(AuthGuard)
   logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('access_token');
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
     return { message: 'Logout successful' };
   }
 }
