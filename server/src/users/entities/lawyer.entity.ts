@@ -1,23 +1,54 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Lawyer {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  firstName: string;
+  @ManyToOne(() => User, (user) => user.createdLawyers)
+  @JoinColumn({ name: 'createdById' })
+  createdBy: User;
 
   @Column()
-  lastName: string;
+  fullName: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  password: string; // In production, ensure to hash the password
+  phoneNumber: string;
 
-  // Add more fields as needed, e.g.:
-  // @Column({ nullable: true })
-  // licenseNumber?: string;
+  @Column('text')
+  legalExperience: string;
+
+  @Column('text')
+  education: string;
+
+  @Column({ unique: true })
+  barNumber: string;
+
+  @Column('simple-array')
+  visaSpecialties: string[];
+
+  @Column({ nullable: true })
+  yearsOfExperience: number;
+
+  @Column({ nullable: true })
+  lawFirm: string;
+
+  @Column({ default: false })
+  verified: boolean;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({ nullable: true })
+  createdById: number;
 }

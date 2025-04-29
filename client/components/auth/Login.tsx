@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserAPI } from "@/app/api/UserAPI";
 
 export default function Login() {

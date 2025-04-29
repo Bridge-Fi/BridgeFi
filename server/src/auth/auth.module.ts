@@ -4,8 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from '../users/users.module';
+import { AuthGuard } from './guards/auth.guard';
 
 const jwtConfig = {
   secret: 'your_strong_secret_key',
@@ -14,7 +14,7 @@ const jwtConfig = {
 
 @Module({
   imports: [
-    forwardRef(() => UsersModule), // ✅ Use forwardRef to solve circular import
+    forwardRef(() => UsersModule),
     PassportModule,
     JwtModule.register({
       global: true,
@@ -22,15 +22,7 @@ const jwtConfig = {
       signOptions: { expiresIn: jwtConfig.expiresIn },
     }),
   ],
-  providers: [
-    AuthService,
-    // LocalStrategy,
-    // {
-    //   provide: 'JWT_CONFIG',
-    //   useValue: jwtConfig,
-    // },
-    JwtStrategy,
-  ],
-  exports: [AuthService],
+  providers: [AuthService, JwtStrategy, AuthGuard],
+  exports: [AuthService, AuthGuard],
 })
 export class AuthModule {}

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Lawyer } from './lawyer.entity';
 
 @Entity()
 export class User {
@@ -19,4 +20,7 @@ export class User {
 
   @Column({ default: 'user' })
   role: string;
+
+  @OneToMany(() => Lawyer, (lawyer) => lawyer.createdBy)
+  createdLawyers: Lawyer[];
 }

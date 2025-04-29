@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { LawyerModule } from './users/lawyers/lawyer.module';
+import { Lawyer } from './users/entities/lawyer.entity';
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { AuthModule } from './auth/auth.module';
       username: 'root',
       password: '1234',
       database: 'BRIDGEFI',
-      entities: [User],
+      entities: [User, Lawyer],
       synchronize: true, // Disable in production
     }),
+    AuthModule,
+    LawyerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
