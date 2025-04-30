@@ -17,7 +17,6 @@ export class LawyerService {
   ) {}
 
   async create(createLawyerDto: CreateLawyerDto, admin: User): Promise<Lawyer> {
-    // Check for existing email
     const existingEmail = await this.lawyerRepository.findOne({
       where: { email: createLawyerDto.email },
     });
@@ -25,7 +24,6 @@ export class LawyerService {
       throw new ConflictException('Email already exists');
     }
 
-    // Check for existing bar number
     const existingBarNumber = await this.lawyerRepository.findOne({
       where: { barNumber: createLawyerDto.barNumber },
     });
@@ -34,12 +32,11 @@ export class LawyerService {
     }
 
     try {
-      // Create lawyer with proper relation handling
       const lawyer = this.lawyerRepository.create({
         ...createLawyerDto,
         yearsOfExperience: createLawyerDto.yearsOfExperience || null,
         lawFirm: createLawyerDto.lawFirm || null,
-        createdById: admin.id, // Directly set the foreign key
+        createdById: admin.id,
         verified: false,
       });
 
