@@ -1,20 +1,9 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { User } from './user.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'lawyer' })
 export class Lawyer {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
-
-  @ManyToOne(() => User, (user) => user.createdLawyers)
-  @JoinColumn({ name: 'createdById' })
-  createdBy: User;
 
   @Column()
   fullName: string;
@@ -48,7 +37,4 @@ export class Lawyer {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
-  @Column({ nullable: true })
-  createdById: number;
 }

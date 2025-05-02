@@ -11,5 +11,18 @@ export interface Lawyer {
   lawFirm?: string;
   verified: boolean;
   createdAt: string;
-  createdById: number;
+}
+
+export interface UpdateLawyer {
+  id?: number;
+  fullName?: string;
+  email?: string;
+  phoneNumber?: string;
+  legalExperience?: string;
+  education?: string;
+  barNumber?: string;
+  visaSpecialties?: string[];
+  yearsOfExperience?: number;
+  lawFirm?: string;
+  verified?: boolean;
 }

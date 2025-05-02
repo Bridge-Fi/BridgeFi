@@ -1,11 +1,10 @@
 import {
+  Injectable,
   CanActivate,
   ExecutionContext,
-  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -13,26 +12,20 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromCookie(request);
+    const token = request.cookies?.access_token;
 
     if (!token) {
-      throw new UnauthorizedException('No authentication token found');
+      throw new UnauthorizedException('No authentication token');
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = await this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
-
       request.user = payload;
-    } catch (error) {
-      throw new UnauthorizedException('Invalid or expired token');
+      return true;
+    } catch (e) {
+      throw new UnauthorizedException('Invalid token');
     }
-
-    return true;
-  }
-
-  private extractTokenFromCookie(request: Request): string | null {
-    return request.cookies?.access_token || null;
   }
 }

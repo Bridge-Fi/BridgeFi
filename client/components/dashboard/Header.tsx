@@ -103,8 +103,8 @@ export default function Header() {
                 >
                   Financial Resources
                 </Link>
-                <Link href="/contact" className="hover:text-blue-600">
-                  Contact
+                <Link href="/profile" className="hover:text-blue-600">
+                  Profile
                 </Link>
               </>
             )
@@ -234,11 +234,11 @@ export default function Header() {
                   Financial Resources
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/profile"
                   onClick={() => setMenuOpen(false)}
                   className="hover:text-blue-600"
                 >
-                  Contact
+                  Profile
                 </Link>
               </>
             )

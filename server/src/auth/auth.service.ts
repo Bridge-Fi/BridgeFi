@@ -33,10 +33,17 @@ export class AuthService {
   }
 
   login(user: Omit<User, 'password'>) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
     return {
       access_token: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
+        expiresIn: '1h',
       }),
     };
   }

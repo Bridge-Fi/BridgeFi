@@ -10,6 +10,9 @@ import {
   Res,
   Get,
   UseGuards,
+  Patch,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
@@ -19,6 +22,8 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import { Request, Response } from 'express';
 import { GetRequest } from 'src/auth/get-requested.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -52,7 +57,6 @@ export class UsersController {
   }
 
   @Post('login')
-  // @UsePipes(new ValidationPipe({ transform: true }))
   async login(
     @Body() loginDto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
@@ -68,14 +72,17 @@ export class UsersController {
       throw new UnauthorizedException('Invalid email or password');
     }
     const { access_token } = this.authService.login(user);
+    const { ...safeUser } = user;
 
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 3600000, // 1 hour in milliseconds
+      path: '/',
     });
 
-    res.send({ message: 'Login successful', user: user });
+    res.send({ message: 'Login successful', user: safeUser, role: user.role });
   }
 
   @Get('get-logged-user')
@@ -94,8 +101,27 @@ export class UsersController {
     response.clearCookie('access_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
     });
     return { message: 'Logout successful' };
+  }
+
+  @Get()
+  @UseGuards(AuthGuard, AdminGuard)
+  async findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard, AdminGuard)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard, AdminGuard)
+  async remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
   }
 }

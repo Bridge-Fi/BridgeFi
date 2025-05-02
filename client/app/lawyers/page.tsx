@@ -11,8 +11,8 @@ import avatar from "@/public/images/avatar.jpeg";
 import { FaLinkedinIn, FaTwitter, FaFacebook } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { UserAPI } from "../api/UserAPI";
 import { Loader2 } from "lucide-react";
+import { LawyerApi } from "../api/LawyerApi";
 
 interface Lawyer {
   fullName: string;
@@ -77,13 +77,13 @@ export default function LawyersShowcase() {
   useEffect(() => {
     const checkAuthAndFetchLawyers = async () => {
       try {
-        const user = await UserAPI.getLoggedUser();
+        const user = await LawyerApi.getLoggedUser();
         if (user instanceof Error || user.role !== "user") {
           router.push("/");
           return;
         }
 
-        const lawyersData = await UserAPI.getLawyers();
+        const lawyersData = await LawyerApi.getLawyers();
         if (lawyersData instanceof Error) {
           setError("Failed to fetch lawyers.");
         } else {

@@ -1,4 +1,5 @@
 import axios from "./axios";
+import { UpdateUser } from "../types/user";
 
 export const UserAPI = {
   async register(userData: any) {
@@ -37,22 +38,18 @@ export const UserAPI = {
     }
   },
 
-  async getLawyers() {
+  async updateUser(id: number, values: UpdateUser) {
     try {
-      const response = await axios.get("/lawyers", {
-        withCredentials: true,
-      });
+      const response = await axios.patch(`/users/${id}`, values);
       return response.data;
     } catch (error) {
-      return new Error("Failed to fetch lawyers");
+      throw error;
     }
   },
 
-  async registerLawyer(values: any) {
+  async deleteUser(id: number) {
     try {
-      const response = await axios.post("/lawyers", values, {
-        withCredentials: true,
-      });
+      const response = await axios.delete(`/users/${id}`);
       return response.data;
     } catch (error) {
       throw error;
