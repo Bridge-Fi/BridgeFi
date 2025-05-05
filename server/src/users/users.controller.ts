@@ -13,6 +13,7 @@ import {
   Patch,
   Delete,
   Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
@@ -113,10 +114,53 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async getCurrentUser(@Res() res: Response) {
+    try {
+      const user = res.locals.user;
+      return res.status(200).json({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      });
+    } catch (error) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+  }
+
   @Patch(':id')
-  @UseGuards(AuthGuard, AdminGuard)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @UseGuards(AuthGuard)
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @GetRequest() req: Request,
+  ) {
+    try {
+      const userId = parseInt(id);
+      if (isNaN(userId)) {
+        throw new Error('Invalid user ID');
+      }
+
+      const loggedUser = await this.authService.getLoggedUser(req);
+
+      if (userId !== loggedUser.sub) {
+        throw new UnauthorizedException('You can only update your own profile');
+      }
+      const updatedUser = await this.usersService.updateUser(
+        userId,
+        updateUserDto,
+      );
+
+      const { password, ...userResult } = updatedUser;
+
+      return userResult;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Delete(':id')

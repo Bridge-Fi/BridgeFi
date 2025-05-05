@@ -1,8 +1,8 @@
 import axios from "./axios";
-import { UpdateUser } from "../types/user";
+import { LoggedUser, RegisterUser, UpdateUser, User } from "../types/user";
 
 export const UserAPI = {
-  async register(userData: any) {
+  async register(userData: RegisterUser) {
     const response = await axios.post("/users/register", userData);
     return response;
   },
@@ -38,12 +38,14 @@ export const UserAPI = {
     }
   },
 
-  async updateUser(id: number, values: UpdateUser) {
+  async updateUser(userId: number, data: UpdateUser): Promise<User | Error> {
     try {
-      const response = await axios.patch(`/users/${id}`, values);
+      const response = await axios.patch(`/users/${userId}`, data, {
+        withCredentials: true,
+      });
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      return new Error(error.response?.data?.message || "Update failed");
     }
   },
 

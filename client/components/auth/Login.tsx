@@ -1,25 +1,38 @@
 "use client";
-
 import { IoArrowBack } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
-import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
+import {
+  FaApple,
+  FaFacebook,
+  FaGoogle,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { UserAPI } from "@/app/api/UserAPI";
+import { useState } from "react";
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+});
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
+  const handleSubmit = async (values: { email: string; password: string }) => {
     try {
-      await UserAPI.login(email, password);
+      setError("");
+      await UserAPI.login(values.email, values.password);
       const user = await UserAPI.getLoggedUser();
 
       if (user.role === "admin") {
@@ -30,9 +43,7 @@ export default function Login() {
         router.push("/");
       }
     } catch (error: any) {
-      setError(
-        error.response?.user?.message || error.message || "Login failed"
-      );
+      setError(error.message || "Invalid email or password");
     }
   };
 
@@ -74,103 +85,117 @@ export default function Login() {
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  required
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400
-                             focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={LoginSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email address
+                  </label>
+                  <Field
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400
-                             focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Password
+                  </label>
+                  <div className="relative mt-1">
+                    <Field
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
 
-            {error && (
-              <div className="text-red-500 text-sm text-center">{error}</div>
+                {error && (
+                  <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
+                    {error}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="w-full bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Logging in..." : "Log in"}
+                </Button>
+
+                <div className="relative mt-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="bg-white px-2 text-gray-500">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-3 gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    <FaGoogle />
+                    Google
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    <FaApple />
+                    Apple
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    <FaFacebook />
+                    Facebook
+                  </Button>
+                </div>
+              </Form>
             )}
-
-            <Button
-              type="submit"
-              variant="default"
-              className="w-full bg-blue-600 py-2 px-4 text-sm font-medium text-white
-                         hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600
-                         focus:ring-offset-2"
-            >
-              Log in
-            </Button>
-
-            <div className="relative mt-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <Button
-                variant="outline"
-                className="flex items-center justify-center gap-2 border-gray-300
-                           bg-white text-gray-700 hover:bg-gray-50"
-              >
-                <FaGoogle />
-                Google
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center justify-center gap-2 border-gray-300
-                           bg-white text-gray-700 hover:bg-gray-50"
-              >
-                <FaApple />
-                Apple
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center justify-center gap-2 border-gray-300
-                           bg-white text-gray-700 hover:bg-gray-50"
-              >
-                <FaFacebook />
-                Facebook
-              </Button>
-            </div>
-          </form>
+          </Formik>
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Don't have an account?{" "}
