@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Appointment } from 'src/appointments/entities/appointments.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 
 @Entity({ name: 'lawyer' })
 export class Lawyer {
@@ -35,6 +36,8 @@ export class Lawyer {
   @Column({ default: false })
   verified: boolean;
 
+  @ManyToMany(() => Appointment, (appointment) => appointment.lawyer)
+  appointments: Appointment[];
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }

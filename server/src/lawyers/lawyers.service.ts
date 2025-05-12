@@ -47,12 +47,30 @@ export class LawyerService {
     }
   }
 
+  async validateLawyer(email: string, password: string) {
+    const lawyer = await this.lawyerRepository.findOne({
+      where: { email },
+    });
+    if (!lawyer) {
+      throw new NotFoundException('Lawyer not found');
+    }
+  }
+
   async findAll(): Promise<Lawyer[]> {
     return this.lawyerRepository.find({
       order: { createdAt: 'DESC' },
     });
   }
 
+  async findOne(id: number): Promise<Lawyer> {
+    const lawyer = await this.lawyerRepository.findOne({
+      where: { id },
+    });
+    if (!lawyer) {
+      throw new NotFoundException(`Lawyer with ID ${id} not found`);
+    }
+    return lawyer;
+  }
   async update(id: number, updateLawyerDto: UpdateLawyerDto): Promise<Lawyer> {
     const lawyer = await this.lawyerRepository.findOne({
       where: { id },

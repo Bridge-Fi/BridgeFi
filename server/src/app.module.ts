@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { LawyersModule } from './lawyers/lawyers.module';
 import { Lawyer } from './lawyers/entities/lawyer.entity';
 import { User } from './users/entities/user.entity';
+import { Appointment } from './appointments/entities/appointments.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { User } from './users/entities/user.entity';
       username: 'root',
       password: '1234',
       database: 'BRIDGEFI',
-      entities: [User, Lawyer],
+      entities: [User, Lawyer, Appointment],
       synchronize: true,
     }),
     UsersModule,

@@ -11,6 +11,7 @@ export interface Lawyer {
   lawFirm?: string;
   verified: boolean;
   createdAt: string;
+  notificationEmail: string;
 }
 
 export interface UpdateLawyer {

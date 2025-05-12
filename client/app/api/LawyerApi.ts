@@ -64,4 +64,18 @@ export const LawyerApi = {
       throw error;
     }
   },
+
+  async bookAppointment(data: {
+    lawyerId: number;
+    clientName: string;
+    clientEmail: string;
+    inquiry: string;
+  }) {
+    try {
+      const response = await axios.post("/lawyers/appointments", data);
+      return response.data;
+    } catch (error: any) {
+      return new Error(error.response?.data?.message || "Booking failed");
+    }
+  },
 };
