@@ -7,7 +7,8 @@ export default function Footer() {
   if (
     !pathName.includes("/sign-up") &&
     !pathName.includes("/login") &&
-    !pathName.includes("/admin")
+    !pathName.includes("/admin") &&
+    !pathName.includes("/lawyer-login")
   ) {
     return (
       <footer className="bg-gray-900 text-white">

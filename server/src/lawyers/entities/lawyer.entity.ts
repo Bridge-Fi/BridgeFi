@@ -1,5 +1,11 @@
 import { Appointment } from 'src/appointments/entities/appointments.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'lawyer' })
 export class Lawyer {
@@ -11,6 +17,9 @@ export class Lawyer {
 
   @Column({ unique: true })
   email: string;
+
+  @Column()
+  password: string;
 
   @Column()
   phoneNumber: string;
@@ -36,8 +45,9 @@ export class Lawyer {
   @Column({ default: false })
   verified: boolean;
 
-  @ManyToMany(() => Appointment, (appointment) => appointment.lawyer)
+  @OneToMany(() => Appointment, (appointment) => appointment.lawyer)
   appointments: Appointment[];
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }

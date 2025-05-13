@@ -3,12 +3,14 @@ import {
   ConflictException,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateLawyerDto } from './dto/create-lawyer.dto';
 import { Lawyer } from './entities/lawyer.entity';
 import { UpdateLawyerDto } from './dto/update-lawyer.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class LawyerService {
@@ -47,13 +49,22 @@ export class LawyerService {
     }
   }
 
-  async validateLawyer(email: string, password: string) {
-    const lawyer = await this.lawyerRepository.findOne({
-      where: { email },
-    });
+  async validateLawyer(
+    email: string,
+    password: string,
+  ): Promise<Omit<Lawyer, 'password'>> {
+    const lawyer = await this.lawyerRepository.findOne({ where: { email } });
     if (!lawyer) {
       throw new NotFoundException('Lawyer not found');
     }
+
+    const pwdMatches = await bcrypt.compare(password, lawyer.password);
+    if (!pwdMatches) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const { password: _, ...rest } = lawyer;
+    return rest;
   }
 
   async findAll(): Promise<Lawyer[]> {

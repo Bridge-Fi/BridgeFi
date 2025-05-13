@@ -8,16 +8,23 @@ export const UserAPI = {
   },
 
   async login(email: string, password: string) {
-    const response = await axios.post("/users/login", {
-      email: email,
-      password: password,
-    });
+    const response = await axios.post(
+      "/users/login",
+      {
+        email: email,
+        password: password,
+      },
+      { withCredentials: true }
+    );
     return response;
   },
 
   async getLoggedUser() {
     try {
-      const response = await axios.get("/users/get-logged-user");
+      const response = await axios.get(
+        "/users/get-logged-user",
+        { withCredentials: true } // ← ensure cookie goes
+      );
       return response.data;
     } catch {
       return new Error("You are not authenticated");

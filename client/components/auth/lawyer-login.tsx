@@ -1,3 +1,4 @@
+// app/lawyer-login/page.tsx
 "use client";
 
 import { IoArrowBack } from "react-icons/io5";
@@ -12,10 +13,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { UserAPI } from "@/app/api/UserAPI";
+import { LawyerApi } from "@/app/api/LawyerApi";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LawyerApi } from "@/app/api/LawyerApi";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -24,22 +24,26 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
-export default function Login() {
+export default function LawyerLogin() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // login.tsx – updated handleSubmit
   const handleSubmit = async (values: { email: string; password: string }) => {
     try {
       setError("");
-      // only user/admin login here
-      await UserAPI.login(values.email, values.password);
-      const user = await UserAPI.getLoggedUser();
-      if (user instanceof Error) throw new Error("Auth failed");
 
-      if (user.role === "admin") router.push("/admin");
-      else router.push("/");
+      // 1) Lawyer login only
+      await LawyerApi.login(values.email, values.password);
+
+      // 2) Fetch the now-logged-in user via LawyerApi
+      const user = await LawyerApi.getLoggedUser();
+      if (user instanceof Error || user.role !== "lawyer") {
+        throw new Error("Auth failed");
+      }
+
+      // 3) Redirect to lawyer dashboard
+      router.push("/lawyer");
     } catch (e: any) {
       setError(e.response?.data?.message || e.message || "Invalid credentials");
     }
@@ -50,7 +54,7 @@ export default function Login() {
       <div
         className="relative hidden w-1/2 flex-col items-center justify-center md:flex"
         style={{
-          backgroundImage: "url(/images/office-background.jpg)",
+          backgroundImage: "url(/images/lawyer.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -76,10 +80,10 @@ export default function Login() {
         <div className="w-full max-w-md rounded-lg bg-white px-6 py-8 shadow-lg sm:px-10">
           <div className="mb-8 text-center">
             <h2 className="text-2xl font-semibold text-gray-900">
-              Log in to your account
+              Lawyer Login
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Welcome back! Please enter your details.
+              Please enter your lawyer credentials.
             </p>
           </div>
 
@@ -156,59 +160,17 @@ export default function Login() {
                 >
                   {isSubmitting ? "Logging in..." : "Log in"}
                 </Button>
-
-                <div className="relative mt-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-2 text-gray-500">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                  >
-                    <FaGoogle /> Google
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                  >
-                    <FaApple /> Apple
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-center gap-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                  >
-                    <FaFacebook /> Facebook
-                  </Button>
-                </div>
               </Form>
             )}
           </Formik>
 
           <p className="mt-8 text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Not a lawyer?{" "}
             <Link
-              href="/sign-up"
+              href="/login"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              Sign up
-            </Link>
-          </p>
-          {/* ← new: lawyer switch */}
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Are you a lawyer?{" "}
-            <Link
-              href="/lawyer-login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              Log in here
+              Log in as User
             </Link>
           </p>
         </div>

@@ -1,17 +1,19 @@
 import { Lawyer } from 'src/lawyers/entities/lawyer.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
-  Column,
   Entity,
-  ManyToMany,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('appointments')
 export class Appointment {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
+
   @Column({ type: 'timestamp' })
   date: Date;
 
@@ -21,14 +23,17 @@ export class Appointment {
   @Column({ type: 'text' })
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
-  @ManyToOne(() => User, (user) => user.appointments)
+  @ManyToOne(() => User, (user) => user.appointments, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Lawyer, (lawyer) => lawyer.appointments)
+  @ManyToOne(() => Lawyer, (lawyer) => lawyer.appointments, {
+    onDelete: 'SET NULL',
+  })
   lawyer: Lawyer;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }

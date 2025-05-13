@@ -34,6 +34,7 @@ const LawyerSchema = Yup.object().shape({
   fullName: Yup.string().required("Full name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phoneNumber: Yup.string().required("Phone number is required"),
+  password: Yup.string().required("Password is required"),
   legalExperience: Yup.string().required("Legal experience is required"),
   education: Yup.string().required("Education is required"),
   barNumber: Yup.string().required("Bar number is required"),
@@ -91,7 +92,10 @@ export default function AdminDashboard() {
           )
         );
       } else {
-        const newLawyer = await LawyerApi.registerLawyer(values);
+        const newLawyer = await LawyerApi.registerLawyer({
+          ...values,
+          password: values.password,
+        });
         setLawyers([...lawyers, newLawyer]);
       }
       resetForm();
@@ -222,6 +226,7 @@ export default function AdminDashboard() {
               initialValues={{
                 fullName: editingLawyer?.fullName || "",
                 email: editingLawyer?.email || "",
+                password: "",
                 phoneNumber: editingLawyer?.phoneNumber || "",
                 legalExperience: editingLawyer?.legalExperience || "",
                 education: editingLawyer?.education || "",
@@ -231,6 +236,8 @@ export default function AdminDashboard() {
                 lawFirm: editingLawyer?.lawFirm || "",
               }}
               validationSchema={LawyerSchema}
+              validateOnMount
+              validationContext={{ isEditing: !!editingLawyer }}
               onSubmit={handleSubmit}
               enableReinitialize
             >
@@ -267,6 +274,24 @@ export default function AdminDashboard() {
                         className="text-red-500 text-sm"
                       />
                     </div>
+
+                    {!editingLawyer && (
+                      <div className="space-y-1">
+                        <label className="block text-sm font-medium">
+                          Password
+                        </label>
+                        <Field
+                          name="password"
+                          type="password"
+                          className="w-full p-2 border rounded"
+                        />
+                        <ErrorMessage
+                          name="password"
+                          component="div"
+                          className="text-red-500 text-sm"
+                        />
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-sm font-medium mb-1">

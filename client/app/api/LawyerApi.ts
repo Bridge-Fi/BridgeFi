@@ -2,6 +2,19 @@ import { UpdateLawyer } from "../types/lawyer";
 import axios from "./axios";
 
 export const LawyerApi = {
+  async login(email: string, password: string) {
+    try {
+      const response = await axios.post(
+        "/lawyers/login",
+        { email, password },
+        { withCredentials: true } // ← this is critical!
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async getLawyers() {
     try {
       const response = await axios.get("/lawyers", {

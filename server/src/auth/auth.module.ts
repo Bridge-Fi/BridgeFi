@@ -6,6 +6,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { LawyersModule } from 'src/lawyers/lawyers.module';
 
 const jwtConfig = {
   secret: 'your_strong_secret_key',

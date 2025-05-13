@@ -8,7 +8,6 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import avatar from "@/public/images/avatar.jpeg";
-import { FaLinkedinIn, FaTwitter, FaFacebook } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -29,6 +28,7 @@ interface Lawyer {
   id: number;
   fullName: string;
   email: string;
+  password: string;
   visaSpecialties: string[];
   education: string;
   legalExperience: string;

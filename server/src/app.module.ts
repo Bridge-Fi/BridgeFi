@@ -9,6 +9,7 @@ import { LawyersModule } from './lawyers/lawyers.module';
 import { Lawyer } from './lawyers/entities/lawyer.entity';
 import { User } from './users/entities/user.entity';
 import { Appointment } from './appointments/entities/appointments.entity';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { Appointment } from './appointments/entities/appointments.entity';
     UsersModule,
     AuthModule,
     LawyersModule,
+    AppointmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
