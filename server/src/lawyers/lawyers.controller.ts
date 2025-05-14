@@ -27,6 +27,11 @@ export class LawyersController {
     private readonly authService: AuthService,
   ) {}
 
+  @Get()
+  findAll() {
+    return this.lawyersService.findAll();
+  }
+
   @Post('login')
   async login(
     @Body() dto: LoginLawyerDto,
@@ -55,11 +60,6 @@ export class LawyersController {
       ...createLawyerDto,
       password: hashed,
     });
-  }
-
-  @Get()
-  findAll() {
-    return this.lawyersService.findAll();
   }
 
   @Patch(':id')

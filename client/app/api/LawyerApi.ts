@@ -7,7 +7,7 @@ export const LawyerApi = {
       const response = await axios.post(
         "/lawyers/login",
         { email, password },
-        { withCredentials: true } // ← this is critical!
+        { withCredentials: true }
       );
       return response.data;
     } catch (error) {
@@ -17,9 +17,7 @@ export const LawyerApi = {
 
   async getLawyers() {
     try {
-      const response = await axios.get("/lawyers", {
-        withCredentials: true,
-      });
+      const response = await axios.get("/lawyers");
       return response.data;
     } catch (error) {
       return new Error("Failed to fetch lawyers");

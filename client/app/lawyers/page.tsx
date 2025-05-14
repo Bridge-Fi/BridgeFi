@@ -1,5 +1,7 @@
+// app/lawyer.tsx
 "use client";
-import Image, { StaticImageData } from "next/image";
+
+import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -12,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { LawyerApi } from "../api/LawyerApi";
+import { UserAPI } from "../api/UserAPI";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +31,6 @@ interface Lawyer {
   id: number;
   fullName: string;
   email: string;
-  password: string;
   visaSpecialties: string[];
   education: string;
   legalExperience: string;
@@ -58,7 +60,7 @@ function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
       });
       setSubmissionStatus("success");
       setTimeout(() => setIsDialogOpen(false), 2000);
-    } catch (error) {
+    } catch {
       setSubmissionStatus("error");
     }
   };
@@ -202,19 +204,21 @@ export default function LawyersShowcase() {
   useEffect(() => {
     const checkAuthAndFetchLawyers = async () => {
       try {
-        const user = await LawyerApi.getLoggedUser();
+        // 1) Verify visitor is a logged-in *user* (not lawyer)
+        const user = await UserAPI.getLoggedUser();
         if (user instanceof Error || user.role !== "user") {
           router.push("/");
           return;
         }
 
+        // 2) Fetch the list of lawyers
         const lawyersData = await LawyerApi.getLawyers();
         if (lawyersData instanceof Error) {
           setError("Failed to fetch lawyers.");
         } else {
           setLawyers(lawyersData);
         }
-      } catch (error) {
+      } catch {
         router.push("/login");
       } finally {
         setLoading(false);

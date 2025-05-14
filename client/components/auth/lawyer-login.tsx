@@ -43,7 +43,7 @@ export default function LawyerLogin() {
       }
 
       // 3) Redirect to lawyer dashboard
-      router.push("/lawyer");
+      router.push("/");
     } catch (e: any) {
       setError(e.response?.data?.message || e.message || "Invalid credentials");
     }

@@ -1,3 +1,4 @@
+// components/Header.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -34,10 +35,8 @@ export default function Header() {
     const checkAuth = async () => {
       try {
         const user = await UserAPI.getLoggedUser();
-        if (!(user instanceof Error)) {
-          setLoggedUser(user);
-        }
-      } catch (error) {
+        if (!(user instanceof Error)) setLoggedUser(user);
+      } catch {
         setLoggedUser(null);
       } finally {
         setLoading(false);
@@ -60,11 +59,12 @@ export default function Header() {
     }
   };
 
+  // Hide header on auth pages
   if (
     pathName.includes("/sign-up") ||
     pathName.includes("/login") ||
-    pathName.includes("/admin") ||
-    pathName.includes("/lawyer-login")
+    pathName.includes("/lawyer-login") ||
+    pathName.includes("/admin")
   )
     return null;
 
@@ -89,27 +89,34 @@ export default function Header() {
                 Contact
               </Link>
             </>
-          ) : (
-            loggedUser.role === "user" && (
-              <>
-                <Link href="/lawyers" className="hover:text-blue-600">
-                  Lawyers
-                </Link>
-                <Link href="/employer-hub" className="hover:text-blue-600">
-                  Employer Hub
-                </Link>
-                <Link
-                  href="/financial-resources"
-                  className="hover:text-blue-600"
-                >
-                  Financial Resources
-                </Link>
-                <Link href="/profile" className="hover:text-blue-600">
-                  Profile
-                </Link>
-              </>
-            )
-          )}
+          ) : loggedUser.role === "user" ? (
+            <>
+              <Link href="/lawyers" className="hover:text-blue-600">
+                Lawyers
+              </Link>
+              <Link href="/employer-hub" className="hover:text-blue-600">
+                Employer Hub
+              </Link>
+              <Link href="/financial-resources" className="hover:text-blue-600">
+                Financial Resources
+              </Link>
+              <Link href="/profile" className="hover:text-blue-600">
+                Profile
+              </Link>
+            </>
+          ) : loggedUser.role === "lawyer" ? (
+            <>
+              <Link href="/lawyer/appointments" className="hover:text-blue-600">
+                Appointments
+              </Link>
+              <Link href="/lawyer/clients" className="hover:text-blue-600">
+                Clients
+              </Link>
+              <Link href="/lawyer/profile" className="hover:text-blue-600">
+                Profile
+              </Link>
+            </>
+          ) : null}
 
           {!loading &&
             (loggedUser ? (
@@ -210,42 +217,64 @@ export default function Header() {
                 Contact
               </Link>
             </>
-          ) : (
-            loggedUser.role === "user" && (
-              <>
-                <Link
-                  href="/lawyers"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600"
-                >
-                  Lawyers
-                </Link>
-                <Link
-                  href="/employer-hub"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600"
-                >
-                  Employer Hub
-                </Link>
-                <Link
-                  href="/financial-resources"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600"
-                >
-                  Financial Resources
-                </Link>
-                <Link
-                  href="/profile"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600"
-                >
-                  Profile
-                </Link>
-              </>
-            )
-          )}
+          ) : loggedUser.role === "user" ? (
+            <>
+              <Link
+                href="/lawyers"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Lawyers
+              </Link>
+              <Link
+                href="/employer-hub"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Employer Hub
+              </Link>
+              <Link
+                href="/financial-resources"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Financial Resources
+              </Link>
+              <Link
+                href="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Profile
+              </Link>
+            </>
+          ) : loggedUser.role === "lawyer" ? (
+            <>
+              <Link
+                href="/lawyer/appointments"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Appointments
+              </Link>
+              <Link
+                href="/lawyer/clients"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Clients
+              </Link>
+              <Link
+                href="/lawyer/profile"
+                onClick={() => setMenuOpen(false)}
+                className="hover:text-blue-600"
+              >
+                Profile
+              </Link>
+            </>
+          ) : null}
 
-          {loggedUser ? (
+          {loggedUser && (
             <Button
               variant="destructive"
               onClick={handleLogout}
@@ -253,23 +282,6 @@ export default function Header() {
             >
               Logout
             </Button>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                Login
-              </Link>
-              <Link
-                href="/sign-up"
-                className="text-blue-600 hover:text-blue-800"
-                onClick={() => setMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </>
           )}
         </nav>
       )}
