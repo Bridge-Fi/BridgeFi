@@ -78,15 +78,52 @@ export const LawyerApi = {
 
   async bookAppointment(data: {
     lawyerId: number;
-    clientName: string;
-    clientEmail: string;
+    appointmentDate: string; // ISO string
     inquiry: string;
   }) {
+    const { lawyerId, appointmentDate, inquiry } = data;
+
     try {
-      const response = await axios.post("/lawyers/appointments", data);
+      const response = await axios.post("/appointments", {
+        lawyerId,
+        appointmentDate,
+        inquiry,
+      });
       return response.data;
     } catch (error: any) {
       return new Error(error.response?.data?.message || "Booking failed");
+    }
+  },
+
+  /** Lawyer fetches their own appointments */
+  async getAppointmentsByLawyer(lawyerId: number) {
+    try {
+      const response = await axios.get(`/appointments/lawyer/${lawyerId}`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error: any) {
+      return new Error(
+        error.response?.data?.message || "Failed to load appointments"
+      );
+    }
+  },
+
+  async updateAppointmentStatus(
+    appointmentId: number,
+    status: "accepted" | "rejected"
+  ) {
+    try {
+      const response = await axios.patch(
+        `/appointments/${appointmentId}`,
+        { status },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error: any) {
+      return new Error(
+        error.response?.data?.message || "Failed to update appointment"
+      );
     }
   },
 };

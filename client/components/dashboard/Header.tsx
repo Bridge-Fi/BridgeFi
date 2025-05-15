@@ -91,7 +91,7 @@ export default function Header() {
             </>
           ) : loggedUser.role === "user" ? (
             <>
-              <Link href="/lawyers" className="hover:text-blue-600">
+              <Link href="/lawyer" className="hover:text-blue-600">
                 Lawyers
               </Link>
               <Link href="/employer-hub" className="hover:text-blue-600">
@@ -126,7 +126,9 @@ export default function Header() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
-                    <DialogTitle>Confirm Logout</DialogTitle>
+                    <DialogTitle className="text-black">
+                      Confirm Logout
+                    </DialogTitle>
                     <DialogDescription>
                       Are you sure you want to log out?
                     </DialogDescription>

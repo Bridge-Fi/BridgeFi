@@ -1,27 +1,41 @@
+// server/src/appointments/appointments.controller.ts
 import {
   Controller,
   Post,
   Get,
   Param,
   Body,
-  ParseIntPipe,
   UseGuards,
+  Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Request } from 'express';
 
 @Controller('appointments')
-@UseGuards(AuthGuard) // require authentication for all appointment routes
+@UseGuards(AuthGuard)
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  async create(@Body() dto: CreateAppointmentDto) {
+  async createAppointment(
+    @Body() dto: CreateAppointmentDto,
+    @Req() req: Request & { user: { sub: number } },
+  ) {
+    // `AuthGuard` ensures `req.user.sub` exists
+    const userId = req.user.sub;
+    const appointmentDate = new Date(dto.appointmentDate);
+
+    // Service expects an object of shape { userId, lawyerId, appointmentDate, inquiry }
     return this.appointmentsService.createAppointment({
-      userId: dto.userId,
+      userId,
       lawyerId: dto.lawyerId,
-      date: dto.date,
+      // our DTO validated this is a string ISO-date, so service can do new Date(...) itself
+      appointmentDate,
+      inquiry: dto.inquiry,
     });
   }
 
