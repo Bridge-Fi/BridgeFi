@@ -64,4 +64,16 @@ export const UserAPI = {
       throw error;
     }
   },
+
+  async getMyAppointments() {
+    try {
+      const user = await this.getLoggedUser();
+      const response = await axios.get(`/appointments/user/${user.sub}`);
+      return response.data;
+    } catch (err: any) {
+      return new Error(
+        err.response?.data?.message || "Failed to load appointments"
+      );
+    }
+  },
 };

@@ -59,7 +59,6 @@ export default function Header() {
     }
   };
 
-  // Hide header on auth pages
   if (
     pathName.includes("/sign-up") ||
     pathName.includes("/login") ||
@@ -75,7 +74,6 @@ export default function Header() {
           BridgeFi
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6 text-gray-700 items-center">
           {!loggedUser ? (
             <>
@@ -93,6 +91,9 @@ export default function Header() {
             <>
               <Link href="/lawyer" className="hover:text-blue-600">
                 Lawyers
+              </Link>
+              <Link href="/user/appointments" className="hover:text-blue-600">
+                My Appointments
               </Link>
               <Link href="/employer-hub" className="hover:text-blue-600">
                 Employer Hub

@@ -95,7 +95,6 @@ export const LawyerApi = {
     }
   },
 
-  /** Lawyer fetches their own appointments */
   async getAppointmentsByLawyer(lawyerId: number) {
     try {
       const response = await axios.get(`/appointments/lawyer/${lawyerId}`, {
@@ -111,7 +110,7 @@ export const LawyerApi = {
 
   async updateAppointmentStatus(
     appointmentId: number,
-    status: "accepted" | "rejected"
+    status: "confirmed" | "cancelled"
   ) {
     try {
       const response = await axios.patch(

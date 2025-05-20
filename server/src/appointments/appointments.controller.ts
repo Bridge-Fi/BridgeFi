@@ -1,4 +1,3 @@
-// server/src/appointments/appointments.controller.ts
 import {
   Controller,
   Post,
@@ -8,6 +7,8 @@ import {
   UseGuards,
   Req,
   ParseIntPipe,
+  ForbiddenException,
+  Patch,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -25,27 +26,50 @@ export class AppointmentsController {
     @Body() dto: CreateAppointmentDto,
     @Req() req: Request & { user: { sub: number } },
   ) {
-    // `AuthGuard` ensures `req.user.sub` exists
     const userId = req.user.sub;
     const appointmentDate = new Date(dto.appointmentDate);
 
-    // Service expects an object of shape { userId, lawyerId, appointmentDate, inquiry }
     return this.appointmentsService.createAppointment({
       userId,
       lawyerId: dto.lawyerId,
-      // our DTO validated this is a string ISO-date, so service can do new Date(...) itself
       appointmentDate,
       inquiry: dto.inquiry,
     });
   }
 
+  @UseGuards(AuthGuard)
   @Get('user/:userId')
-  async findByUser(@Param('userId', ParseIntPipe) userId: number) {
+  async findByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Req() req: Request & { user: { sub: number; role: string } },
+  ) {
+    if (req.user.sub !== userId) {
+      throw new ForbiddenException();
+    }
     return this.appointmentsService.getUserAppointments(userId);
   }
 
   @Get('lawyer/:lawyerId')
   async findByLawyer(@Param('lawyerId', ParseIntPipe) lawyerId: number) {
     return this.appointmentsService.getLawyerAppointments(lawyerId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  async updateStatus(
+    @Param('id', ParseIntPipe) appointmentId: number,
+    @Body('status') status: 'pending' | 'confirmed' | 'completed' | 'cancelled',
+    @Req() req: Request & { user: { sub: number; role: string } },
+  ) {
+    if (req.user.role !== 'lawyer') {
+      throw new ForbiddenException(
+        'Only lawyers may update appointment status',
+      );
+    }
+    return this.appointmentsService.updateAppointmentStatus(
+      appointmentId,
+      status,
+      req.user.sub,
+    );
   }
 }
