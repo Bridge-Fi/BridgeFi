@@ -48,20 +48,22 @@ export default function EmploymentHub() {
           {jobs.map((job) => (
             <Card
               key={job.caseNumber}
-              className="hover:shadow-lg transition-shadow"
+              className="flex flex-col h-full hover:shadow-lg transition-shadow"
             >
               <CardHeader>
                 <h3 className="text-lg font-semibold truncate">
                   {job.jobTitle}
                 </h3>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col flex-1">
                 <p>
                   <strong>Employer:</strong> {job.employerName}
                 </p>
-                <p>
-                  <strong>Location:</strong> {job.city}, {job.state}
-                </p>
+                {(job.city || job.state) && (
+                  <p>
+                    <strong>Location:</strong> {job.city}, {job.state}
+                  </p>
+                )}
                 <p>
                   <strong>Case #:</strong> {job.caseNumber}
                 </p>
@@ -75,9 +77,13 @@ export default function EmploymentHub() {
                     <strong>Email:</strong> {job.employerPocEmail}
                   </p>
                 )}
-                <p className="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-800 rounded">
-                  {job.visaType}
-                </p>
+
+                {/* Push visa type badge to bottom */}
+                <div className="mt-auto pt-4">
+                  <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                    {job.visaType}
+                  </span>
+                </div>
               </CardContent>
             </Card>
           ))}
