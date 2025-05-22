@@ -10,6 +10,8 @@ import { Lawyer } from './lawyers/entities/lawyer.entity';
 import { User } from './users/entities/user.entity';
 import { Appointment } from './appointments/entities/appointments.entity';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { VisaJobsModule } from './visa-jobs/visa-jobs.module';
+import { VisaJob } from './visa-jobs/entities/visa-job.entity';
 
 @Module({
   imports: [
@@ -21,13 +23,14 @@ import { AppointmentsModule } from './appointments/appointments.module';
       username: 'root',
       password: '1234',
       database: 'BRIDGEFI',
-      entities: [User, Lawyer, Appointment],
+      entities: [User, Lawyer, Appointment, VisaJob],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
     LawyersModule,
     AppointmentsModule,
+    VisaJobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
