@@ -29,7 +29,7 @@ export default function Header() {
   const [loading, setLoading] = useState(true);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const pathName = usePathname();
+  const pathName = usePathname() || "";
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -112,9 +112,6 @@ export default function Header() {
               </Link>
               <Link href="/lawyer/clients" className="hover:text-blue-600">
                 Clients
-              </Link>
-              <Link href="/lawyer/profile" className="hover:text-blue-600">
-                Profile
               </Link>
             </>
           ) : null}
@@ -266,13 +263,6 @@ export default function Header() {
                 className="hover:text-blue-600"
               >
                 Clients
-              </Link>
-              <Link
-                href="/lawyer/profile"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Profile
               </Link>
             </>
           ) : null}

@@ -5,8 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { UserAPI } from "../../api/UserAPI";
-import { User } from "../../types/user";
+import { UserAPI } from "../api/UserAPI";
+import { User } from "../types/user";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ProfileSchema = Yup.object().shape({
