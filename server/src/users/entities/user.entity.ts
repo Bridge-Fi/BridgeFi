@@ -1,4 +1,5 @@
 import { Appointment } from 'src/appointments/entities/appointments.entity';
+import { ChatSession } from 'src/chatbot/entities/chat-session.entity/chat-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
@@ -23,4 +24,7 @@ export class User {
 
   @OneToMany(() => Appointment, (appointment) => appointment.user)
   appointments: Appointment[];
+
+  @OneToMany(() => ChatSession, (session) => session.user)
+  sessions: ChatSession[];
 }

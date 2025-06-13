@@ -12,10 +12,13 @@ import { Appointment } from './appointments/entities/appointments.entity';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { VisaJobsModule } from './visa-jobs/visa-jobs.module';
 import { VisaJob } from './visa-jobs/entities/visa-job.entity';
+import { ChatbotModule } from './chatbot/chatbot.module';
+import { ChatSession } from './chatbot/entities/chat-session.entity/chat-session.entity';
+import { Message } from './chatbot/entities/message.entity/message.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -23,7 +26,7 @@ import { VisaJob } from './visa-jobs/entities/visa-job.entity';
       username: 'root',
       password: '1234',
       database: 'BRIDGEFI',
-      entities: [User, Lawyer, Appointment, VisaJob],
+      entities: [User, Lawyer, Appointment, VisaJob, ChatSession, Message],
       synchronize: true,
     }),
     UsersModule,
@@ -31,6 +34,7 @@ import { VisaJob } from './visa-jobs/entities/visa-job.entity';
     LawyersModule,
     AppointmentsModule,
     VisaJobsModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [AppService],
