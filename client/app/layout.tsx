@@ -2,6 +2,7 @@ import "./globals.css";
 import Header from "@/components/dashboard/Header";
 import Footer from "@/components/dashboard/footer";
 import type { Metadata } from "next";
+import { ChatWidget } from "./chatbot/ChatWidget";
 
 export const metadata: Metadata = {
   title: "BridgeFi",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <Header />
         <main>{children}</main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
