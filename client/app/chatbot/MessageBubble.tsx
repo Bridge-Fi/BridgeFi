@@ -1,24 +1,24 @@
 import React, { JSX } from "react";
 
 type Props = {
-  text: string;
+  text?: string;
   fromUser: boolean;
 };
 
 export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
+  // Always work with a string
+  const safeText = text ?? "";
+
   // Function to format text with bullet points and clickable links
-  const formatText = (text: string) => {
-    // Split text into lines
-    const lines = text.split("\n");
+  const formatText = (raw: string) => {
+    const lines = raw.split("\n");
     const formattedLines: JSX.Element[] = [];
 
     lines.forEach((line, index) => {
-      // Check if line starts with a number (1., 2., etc.) or bullet point
       const numberedListMatch = line.match(/^(\d+)\.\s*(.+)/);
       const bulletMatch = line.match(/^[•·*-]\s*(.+)/);
 
       if (numberedListMatch) {
-        // Convert numbered list to bullet point
         const content = numberedListMatch[2];
         formattedLines.push(
           <div key={index} className="flex items-start mb-1">
@@ -27,7 +27,6 @@ export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
           </div>
         );
       } else if (bulletMatch) {
-        // Already a bullet point
         const content = bulletMatch[1];
         formattedLines.push(
           <div key={index} className="flex items-start mb-1">
@@ -36,7 +35,6 @@ export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
           </div>
         );
       } else if (line.trim()) {
-        // Regular text line
         formattedLines.push(
           <div key={index} className="mb-1">
             {formatLinksInText(line)}
@@ -49,16 +47,15 @@ export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
   };
 
   // Function to make URLs clickable
-  const formatLinksInText = (text: string) => {
-    // URL regex pattern
+  const formatLinksInText = (chunk: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
+    const parts = chunk.split(urlRegex);
 
-    return parts.map((part, index) => {
+    return parts.map((part, idx) => {
       if (urlRegex.test(part)) {
         return (
           <a
-            key={index}
+            key={idx}
             href={part}
             target="_blank"
             rel="noopener noreferrer"
@@ -70,7 +67,7 @@ export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
           </a>
         );
       }
-      return part;
+      return <React.Fragment key={idx}>{part}</React.Fragment>;
     });
   };
 
@@ -83,7 +80,7 @@ export const MessageBubble: React.FC<Props> = ({ text, fromUser }) => {
             : "bg-gray-200 text-gray-800 rounded-bl-sm"
         }`}
       >
-        <div className="text-sm leading-relaxed">{formatText(text)}</div>
+        <div className="text-sm leading-relaxed">{formatText(safeText)}</div>
       </div>
     </div>
   );

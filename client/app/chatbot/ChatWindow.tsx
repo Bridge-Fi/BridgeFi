@@ -1,6 +1,7 @@
 // apps/frontend/pages/ChatWindow.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { MessageBubble } from "./MessageBubble";
 import { sendChat } from "../../lib/geminiClient";
 
@@ -22,7 +23,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   // Initialize messages with initial messages on mount
   useEffect(() => {
     setMessages(initialMessages);
-  }, [initialMessages.length]); // Only trigger when length changes
+  }, [initialMessages.length]);
 
   // Notify parent component when messages change
   useEffect(() => {
@@ -31,42 +32,50 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   }, [messages, onMessagesChange]);
 
+  // 1) Create a session via axios
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/chatbot/session", { method: "POST" });
-        const data = await res.json();
-        setSessionId(data.sessionId);
+        const res = await axios.post(
+          "/api/chatbot/session",
+          {},
+          { withCredentials: true }
+        );
+        // coerce to number
+        setSessionId(Number(res.data.sessionId));
       } catch (err) {
-        console.error("Session fetch threw", err);
+        console.error("Session creation failed:", err);
       }
     })();
   }, []);
 
+  // auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const addMessageToState = (msg: { text: string; fromUser: boolean }) => {
+    setMessages((m) => [...m, msg]);
+  };
+
+  // 2) Send user input and get bot reply
   const handleSend = async () => {
     if (!input.trim() || sessionId === null || isLoading) return;
 
     const userMessage = input.trim();
-    setMessages((m) => [...m, { text: userMessage, fromUser: true }]);
+    addMessageToState({ text: userMessage, fromUser: true });
     setInput("");
     setIsLoading(true);
 
     try {
-      const { bot } = await sendChat(sessionId, userMessage);
-      setMessages((m) => [...m, { text: bot, fromUser: false }]);
+      const { text: botText } = await sendChat(`${sessionId}`, userMessage);
+      addMessageToState({ text: botText, fromUser: false });
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages((m) => [
-        ...m,
-        {
-          text: "⚠️ Sorry, I encountered an error. Please try again.",
-          fromUser: false,
-        },
-      ]);
+      addMessageToState({
+        text: "⚠️ Sorry, I encountered an error. Please try again.",
+        fromUser: false,
+      });
     } finally {
       setIsLoading(false);
     }
