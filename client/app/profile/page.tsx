@@ -39,7 +39,6 @@ export default function ProfilePage() {
     const fetchUser = async () => {
       try {
         const user = await UserAPI.getLoggedUser();
-        console.log(user);
         if (user instanceof Error) throw new Error("Not authenticated");
         setCurrentUser({ ...user, id: user.sub });
       } catch (error) {

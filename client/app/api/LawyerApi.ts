@@ -37,10 +37,12 @@ export const LawyerApi = {
 
   async getLoggedUser() {
     try {
-      const response = await axios.get("/users/get-logged-user");
-      return response.data;
+      const response = await axios.get("/lawyers/me", {
+        withCredentials: true,
+      });
+      return response.data; // should be the lawyer object
     } catch {
-      return new Error("You are not authenticated");
+      return new Error("You are not authenticated as a lawyer");
     }
   },
 
@@ -51,7 +53,6 @@ export const LawyerApi = {
         {},
         { withCredentials: true }
       );
-      console.log("You are successfully logged out");
       return response;
     } catch (error) {
       return new Error("Logout failed");

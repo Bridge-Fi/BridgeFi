@@ -10,7 +10,6 @@ export async function GET(request: Request) {
     const { data } = await axios.get("http://localhost:3001/api/visa-jobs", {
       params: { visa, page },
     });
-    console.log("Fetched jobs:", data);
     return NextResponse.json(data);
   } catch (err: any) {
     console.error("Next.js proxy error:", err.response?.data || err.message);

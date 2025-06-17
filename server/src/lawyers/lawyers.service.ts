@@ -49,24 +49,22 @@ export class LawyerService {
     }
   }
 
-  async validateLawyer(
-    email: string,
-    password: string,
-  ): Promise<Omit<Lawyer, 'password'>> {
+  async validateLawyer(email: string, plainPassword: string): Promise<Lawyer> {
     const lawyer = await this.lawyerRepository.findOne({ where: { email } });
     if (!lawyer) {
-      throw new NotFoundException('Lawyer not found');
-    }
-
-    const pwdMatches = await bcrypt.compare(password, lawyer.password);
-    if (!pwdMatches) {
+      console.warn(`⚠️ [validateLawyer] no lawyer found for email=${email}`);
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const { password: _, ...rest } = lawyer;
-    return rest;
-  }
+    const matches = await bcrypt.compare(plainPassword, lawyer.password);
 
+    if (!matches) {
+      console.warn(`⚠️ [validateLawyer] password mismatch for email=${email}`);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return lawyer;
+  }
   async findAll(): Promise<Lawyer[]> {
     return this.lawyerRepository.find({
       order: { createdAt: 'DESC' },

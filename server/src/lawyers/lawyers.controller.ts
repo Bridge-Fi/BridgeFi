@@ -9,6 +9,7 @@ import {
   UseGuards,
   Res,
   UnauthorizedException,
+  Req,
 } from '@nestjs/common';
 import { CreateLawyerDto } from './dto/create-lawyer.dto';
 import { UpdateLawyerDto } from './dto/update-lawyer.dto';
@@ -75,5 +76,26 @@ export class LawyersController {
   @UseGuards(AuthGuard, AdminGuard)
   async remove(@Param('id') id: string) {
     return this.lawyersService.remove(+id);
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async me(@Req() req: Request & { user?: any }) {
+    // AuthGuard should have populated req.user
+    if (!req.user) {
+      throw new UnauthorizedException('Not logged in as lawyer');
+    }
+    return req.user;
+  }
+
+  @Post('logout')
+  @UseGuards(AuthGuard)
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    return { message: 'Logged out' };
   }
 }

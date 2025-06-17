@@ -38,7 +38,6 @@ export const UserAPI = {
         {},
         { withCredentials: true }
       );
-      console.log("You are successfully logged out");
       return response;
     } catch (error) {
       return new Error("Logout failed");

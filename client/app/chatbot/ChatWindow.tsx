@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { MessageBubble } from "./MessageBubble";
 import { sendChat } from "../../lib/geminiClient";
+import { Input } from "@/components/ui/input";
 
 interface ChatWindowProps {
   initialMessages?: { text: string; fromUser: boolean }[];
@@ -20,19 +21,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Initialize messages with initial messages on mount
   useEffect(() => {
     setMessages(initialMessages);
   }, [initialMessages.length]);
 
-  // Notify parent component when messages change
   useEffect(() => {
     if (onMessagesChange && messages.length > 0) {
       onMessagesChange(messages);
     }
   }, [messages, onMessagesChange]);
 
-  // 1) Create a session via axios
   useEffect(() => {
     (async () => {
       try {
@@ -41,7 +39,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           {},
           { withCredentials: true }
         );
-        // coerce to number
         setSessionId(Number(res.data.sessionId));
       } catch (err) {
         console.error("Session creation failed:", err);
@@ -49,7 +46,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     })();
   }, []);
 
-  // auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -58,7 +54,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     setMessages((m) => [...m, msg]);
   };
 
-  // 2) Send user input and get bot reply
   const handleSend = async () => {
     if (!input.trim() || sessionId === null || isLoading) return;
 
@@ -83,14 +78,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      {/* Messages area with proper scrolling */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 min-h-0">
         <div className="space-y-1">
           {messages.map((m, i) => (
             <MessageBubble key={i} text={m.text} fromUser={m.fromUser} />
           ))}
 
-          {/* Loading indicator */}
           {isLoading && (
             <div className="flex justify-start mb-3">
               <div className="bg-gray-200 text-gray-800 p-3 rounded-2xl rounded-bl-sm max-w-xs">
@@ -112,10 +105,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area with better styling */}
       <div className="p-4 border-t bg-white shrink-0">
         <div className="flex items-center space-x-2">
-          <input
+          <Input
             className="flex-1 p-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={input}
             onChange={(e) => setInput(e.target.value)}

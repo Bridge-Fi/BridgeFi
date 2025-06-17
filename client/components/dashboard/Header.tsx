@@ -1,21 +1,31 @@
-// components/Header.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import { usePathname } from "next/navigation";
-import { UserAPI } from "@/app/api/UserAPI";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Menu as MenuIcon,
+  X as CloseIcon,
+  Scale,
+  Building2,
+  DollarSign,
+  Info,
+  Briefcase,
+  User as UserIcon,
+} from "lucide-react";
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { UserAPI } from "@/app/api/UserAPI";
 
 interface User {
   id: number;
@@ -23,16 +33,17 @@ interface User {
   role: string;
 }
 
-export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
+export function Header() {
+  const pathname = usePathname() || "";
+  const [isOpen, setIsOpen] = useState(false);
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const pathName = usePathname() || "";
 
+  // — YOUR AUTH CHECK —
   useEffect(() => {
-    const checkAuth = async () => {
+    async function checkAuth() {
       try {
         const user = await UserAPI.getLoggedUser();
         if (!(user instanceof Error)) setLoggedUser(user);
@@ -41,101 +52,105 @@ export default function Header() {
       } finally {
         setLoading(false);
       }
-    };
+    }
     checkAuth();
-  }, [pathName]);
+  }, [pathname]);
 
+  // — DERIVE AUTH STATE —
+  const isAuthenticated = !!loggedUser;
+
+  // — YOUR LOGOUT HANDLER —
   const handleLogout = async () => {
     setLogoutLoading(true);
-    try {
-      await UserAPI.logout();
-      setLoggedUser(null);
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setLogoutLoading(false);
-      setDialogOpen(false);
-    }
+    await UserAPI.logout();
+    setLoggedUser(null);
+    window.location.href = "/";
   };
 
+  // don’t show on admin/login/signup pages
   if (
-    pathName.includes("/sign-up") ||
-    pathName.includes("/login") ||
-    pathName.includes("/lawyer-login") ||
-    pathName.includes("/admin")
-  )
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/sign-up") ||
+    pathname.startsWith("/lawyer-login") ||
+    pathname.startsWith("/lawyer-dashboard")
+  ) {
     return null;
+  }
+
+  // choose nav array
+  const publicNav = [
+    { name: "Home", href: "/", icon: Info },
+    { name: "About Us", href: "/about", icon: Briefcase },
+    { name: "Services", href: "/services", icon: Briefcase },
+  ];
+  const privateNav = [
+    { name: "Home", href: "/", icon: undefined },
+    { name: "Find Lawyers", href: "/lawyer", icon: Scale },
+    { name: "Employer Hub", href: "/employer-hub", icon: Building2 },
+    {
+      name: "Financial Resources",
+      href: "/financial-resources",
+      icon: DollarSign,
+    },
+  ];
+  const navigation = isAuthenticated ? privateNav : publicNav;
 
   return (
-    <header className="bg-white shadow-sm px-36 py-6 drop-shadow-sm">
-      <div className="flex justify-between items-center">
-        <Link href="/" className="text-xl font-bold text-blue-600">
-          BridgeFi
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-6">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <span className="text-sm font-bold">BF</span>
+          </div>
+          <span className="text-xl font-bold">BridgeFi</span>
         </Link>
 
-        <nav className="hidden md:flex space-x-6 text-gray-700 items-center">
-          {!loggedUser ? (
-            <>
-              <Link href="/about" className="hover:text-blue-600">
-                About
-              </Link>
-              <Link href="/services" className="hover:text-blue-600">
-                Services
-              </Link>
-              <Link href="/contact" className="hover:text-blue-600">
-                Contact
-              </Link>
-            </>
-          ) : loggedUser.role === "user" ? (
-            <>
-              <Link href="/lawyer" className="hover:text-blue-600">
-                Lawyers
-              </Link>
-              <Link href="/user/appointments" className="hover:text-blue-600">
-                My Appointments
-              </Link>
-              <Link href="/employer-hub" className="hover:text-blue-600">
-                Employer Hub
-              </Link>
-              <Link href="/financial-resources" className="hover:text-blue-600">
-                Financial Resources
-              </Link>
-              <Link href="/profile" className="hover:text-blue-600">
-                Profile
-              </Link>
-            </>
-          ) : loggedUser.role === "lawyer" ? (
-            <>
-              <Link href="/lawyer/appointments" className="hover:text-blue-600">
-                Appointments
-              </Link>
-              <Link href="/lawyer/clients" className="hover:text-blue-600">
-                Clients
-              </Link>
-            </>
-          ) : null}
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center space-x-6">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "flex items-center space-x-1 text-sm font-medium transition-colors hover:text-primary",
+                pathname === item.href
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              {item.icon && <item.icon className="h-4 w-4" />}
+              <span>{item.name}</span>
+            </Link>
+          ))}
+        </nav>
 
-          {!loading &&
-            (loggedUser ? (
+        {/* Auth Buttons */}
+        <div className="hidden md:flex items-center space-x-2">
+          {!loading && isAuthenticated ? (
+            <>
+              <Button variant="ghost" size="sm">
+                <UserIcon className="h-4 w-4 mr-2" /> Profile
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDialogOpen(true)}
+              >
+                Sign Out
+              </Button>
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="destructive">Logout</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogTrigger asChild />
+                <DialogContent>
                   <DialogHeader>
-                    <DialogTitle className="text-black">
-                      Confirm Logout
-                    </DialogTitle>
-                    <DialogDescription>
-                      Are you sure you want to log out?
-                    </DialogDescription>
+                    <DialogTitle>Confirm Logout</DialogTitle>
+                    <DialogDescription>Are you sure?</DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <Button
                       variant="secondary"
                       onClick={() => setDialogOpen(false)}
-                      disabled={logoutLoading}
                     >
                       Cancel
                     </Button>
@@ -145,10 +160,7 @@ export default function Header() {
                       disabled={logoutLoading}
                     >
                       {logoutLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Logging Out...
-                        </>
+                        <Loader2 className="animate-spin h-4 w-4" />
                       ) : (
                         "Log Out"
                       )}
@@ -156,128 +168,95 @@ export default function Header() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Sign Up
-                </Link>
-              </>
-            ))}
-        </nav>
-
-        {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
-          {menuOpen ? (
-            <HiOutlineX
-              onClick={() => setMenuOpen(false)}
-              className="w-6 h-6 text-gray-700 cursor-pointer"
-            />
-          ) : (
-            <HiOutlineMenu
-              onClick={() => setMenuOpen(true)}
-              className="w-6 h-6 text-gray-700 cursor-pointer"
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {menuOpen && (
-        <nav className="md:hidden mt-4 flex flex-col space-y-4 text-gray-700">
-          {!loggedUser ? (
-            <>
-              <Link
-                href="/about"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                About
-              </Link>
-              <Link
-                href="/services"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Services
-              </Link>
-              <Link
-                href="/contact"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Contact
-              </Link>
             </>
-          ) : loggedUser.role === "user" ? (
+          ) : !loading && !isAuthenticated ? (
             <>
-              <Link
-                href="/lawyers"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => (window.location.href = "/login")}
               >
-                Lawyers
-              </Link>
-              <Link
-                href="/employer-hub"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
+                <UserIcon className="h-4 w-4 mr-2" /> Sign In
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => (window.location.href = "/sign-up")}
               >
-                Employer Hub
-              </Link>
-              <Link
-                href="/financial-resources"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Financial Resources
-              </Link>
-              <Link
-                href="/profile"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Profile
-              </Link>
-            </>
-          ) : loggedUser.role === "lawyer" ? (
-            <>
-              <Link
-                href="/lawyer/appointments"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Appointments
-              </Link>
-              <Link
-                href="/lawyer/clients"
-                onClick={() => setMenuOpen(false)}
-                className="hover:text-blue-600"
-              >
-                Clients
-              </Link>
+                Get Started
+              </Button>
             </>
           ) : null}
+        </div>
 
-          {loggedUser && (
-            <Button
-              variant="destructive"
-              onClick={handleLogout}
-              className="mt-4"
-            >
-              Logout
+        {/* Mobile Nav Trigger */}
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="sm">
+              <MenuIcon className="h-5 w-5" />
             </Button>
-          )}
-        </nav>
-      )}
+          </SheetTrigger>
+          <SheetContent side="right" className="w-80">
+            <div className="flex flex-col space-y-4 mt-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "flex items-center space-x-2 text-lg font-medium transition-colors hover:text-primary",
+                    pathname === item.href
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.icon && <item.icon className="h-5 w-5" />}
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+
+              {/* Mobile auth buttons */}
+              <div className="pt-4 space-y-2">
+                {!loading && isAuthenticated ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      className="w-full"
+                      onClick={() => setDialogOpen(true)}
+                    >
+                      <UserIcon className="h-4 w-4 mr-2" /> Profile
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleLogout}
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  !loading && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        className="w-full"
+                        onClick={() => (window.location.href = "/login")}
+                      >
+                        <UserIcon className="h-4 w-4 mr-2" /> Sign In
+                      </Button>
+                      <Button
+                        className="w-full"
+                        onClick={() => (window.location.href = "/sign-up")}
+                      >
+                        Get Started
+                      </Button>
+                    </>
+                  )
+                )}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </header>
   );
 }

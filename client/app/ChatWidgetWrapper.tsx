@@ -6,7 +6,7 @@ import { ChatWidget } from "./chatbot/ChatWidget";
 export function ChatWidgetWrapper() {
   const pathname = usePathname() ?? ""; // default to empty string if null
 
-  const excludedPaths = ["/admin", "/login", "/sign-up"];
+  const excludedPaths = ["/admin", "/login", "/sign-up", "/lawyer-login"];
   const showChatWidget = !excludedPaths.some((path) =>
     pathname.startsWith(path)
   );

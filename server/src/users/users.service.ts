@@ -60,9 +60,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    console.log('okej');
 
-    // Handle email update
     if (updateUserDto.email && updateUserDto.email !== user.email) {
       const existingUser = await this.userRepository.findOne({
         where: { email: updateUserDto.email },
