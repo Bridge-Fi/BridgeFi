@@ -52,15 +52,12 @@ export function LawyerHeader({ lawyer, pendingCount }: Props) {
             >
               <Calendar className="h-4 w-4" />
               <span>Appointments</span>
-              {pendingCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-2 h-5 w-5 rounded-full text-xs p-0"
-                >
-                  {pendingCount}
-                </Badge>
-              )}
             </Button>
+            {pendingCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                {pendingCount}
+              </span>
+            )}
           </Link>
 
           <DropdownMenu>

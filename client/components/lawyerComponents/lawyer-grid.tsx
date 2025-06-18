@@ -130,12 +130,6 @@ export function LawyerGrid() {
             </div>
 
             <div className="pt-2 border-t">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-muted-foreground">
-                  Consultation
-                </span>
-                <span className="font-semibold">${lawyer.consultationFee}</span>
-              </div>
               <BookingDialog lawyerId={lawyer.id}>
                 <Button className="w-full">Contact Lawyer</Button>
               </BookingDialog>

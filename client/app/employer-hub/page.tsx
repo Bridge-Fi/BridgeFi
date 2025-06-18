@@ -52,12 +52,6 @@ export default function EmployersPage() {
             Find employers offering visa sponsorship or post your job openings.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/employers/post-job">
-            <Plus className="h-4 w-4 mr-2" />
-            Post a Job
-          </Link>
-        </Button>
       </div>
 
       <EmployerSearch />

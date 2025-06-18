@@ -49,7 +49,7 @@ export const LawyerApi = {
   async logout() {
     try {
       const response = await axios.post(
-        "/users/logout",
+        "/lawyers/logout",
         {},
         { withCredentials: true }
       );

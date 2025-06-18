@@ -2,6 +2,9 @@ export interface User {
   id: number;
   email: string;
   role: "user" | "lawyer" | "admin";
+  firstName?: string;
+  lastName?: string;
+  [key: string]: any;
 }
 
 export interface LoggedUser {

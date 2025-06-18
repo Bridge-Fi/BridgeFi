@@ -62,9 +62,6 @@ const SelectItem = React.forwardRef<
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    <SelectPrimitive.ItemIndicator className="absolute left-0 inline-flex items-center pl-2">
-      <Check className="h-4 w-4" />
-    </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
