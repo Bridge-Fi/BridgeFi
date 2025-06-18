@@ -46,7 +46,7 @@ export class LawyersController {
     // set the token string, not the entire object
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'lax', // helps with CSRF in dev & prod
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60, // 1 hour
     });
@@ -81,11 +81,10 @@ export class LawyersController {
   @Get('me')
   @UseGuards(AuthGuard)
   async me(@Req() req: Request & { user?: any }) {
-    // AuthGuard should have populated req.user
     if (!req.user) {
       throw new UnauthorizedException('Not logged in as lawyer');
     }
-    return req.user;
+    return { ...req.user, role: 'lawyer' }; // ✅ Add role field
   }
 
   @Post('logout')

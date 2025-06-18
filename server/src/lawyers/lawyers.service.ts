@@ -50,21 +50,31 @@ export class LawyerService {
   }
 
   async validateLawyer(email: string, plainPassword: string): Promise<Lawyer> {
-    const lawyer = await this.lawyerRepository.findOne({ where: { email } });
-    if (!lawyer) {
-      console.warn(`⚠️ [validateLawyer] no lawyer found for email=${email}`);
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    const lawyer = await this.lawyerRepository.findOne({
+      where: { email },
+      select: [
+        'id',
+        'email',
+        'password',
+        'fullName',
+        'phoneNumber',
+        'legalExperience',
+        'education',
+        'barNumber',
+        'visaSpecialties',
+        'yearsOfExperience',
+        'lawFirm',
+      ],
+    });
+
+    if (!lawyer) throw new UnauthorizedException('Invalid credentials');
 
     const matches = await bcrypt.compare(plainPassword, lawyer.password);
-
-    if (!matches) {
-      console.warn(`⚠️ [validateLawyer] password mismatch for email=${email}`);
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!matches) throw new UnauthorizedException('Invalid credentials');
 
     return lawyer;
   }
+
   async findAll(): Promise<Lawyer[]> {
     return this.lawyerRepository.find({
       order: { createdAt: 'DESC' },

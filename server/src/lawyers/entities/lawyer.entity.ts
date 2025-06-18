@@ -5,7 +5,10 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   CreateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import * as bcrypt from 'bcryptjs'; // 🔁 Make sure you're using the same library across the app
 
 @Entity({ name: 'lawyer' })
 export class Lawyer {
@@ -18,7 +21,7 @@ export class Lawyer {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: false }) // 🛡️ Ensure password is required
   password: string;
 
   @Column()
@@ -50,4 +53,12 @@ export class Lawyer {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password && !this.password.startsWith('$2')) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
 }
