@@ -11,7 +11,7 @@ const benefits = [
 
 export function ServicesHero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 sm:py-32">
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-200 via-white to-green-200 py-20 sm:py-32">
       <div className="container relative">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-8">
           <div>
@@ -38,13 +38,13 @@ export function ServicesHero() {
 
             <div className="mt-10 flex items-center gap-x-6">
               <Button asChild size="lg">
-                <Link href="/auth/register">
+                <Link href="/sign-up">
                   Get Started Today
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/contact">Schedule Consultation</Link>
+              <Button asChild variant="default" size="lg">
+                <Link href="/login">Schedule Consultation</Link>
               </Button>
             </div>
           </div>

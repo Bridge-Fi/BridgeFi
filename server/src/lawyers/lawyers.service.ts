@@ -61,6 +61,7 @@ export class LawyerService {
         'legalExperience',
         'education',
         'barNumber',
+        'location',
         'visaSpecialties',
         'yearsOfExperience',
         'lawFirm',

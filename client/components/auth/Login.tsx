@@ -39,7 +39,7 @@ export default function Login() {
       if (user instanceof Error) throw new Error("Auth failed");
 
       if (user.role === "admin") router.push("/admin");
-      else router.push("/");
+      else router.push("/lawyer");
     } catch (e: any) {
       setError(e.response?.data?.message || e.message || "Invalid credentials");
     }

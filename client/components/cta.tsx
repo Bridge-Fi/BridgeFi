@@ -15,8 +15,13 @@ export function CTA() {
             path to the United States with BridgeFi.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-base">
-              <Link href="/auth/register">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="text-base border-white hover:text-blue-600"
+            >
+              <Link href="/sign-up">
                 Get Started Today
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -25,9 +30,9 @@ export function CTA() {
               asChild
               size="lg"
               variant="outline"
-              className="text-base border-white text-white hover:bg-white hover:text-blue-600"
+              className="text-base border-white hover:text-blue-600"
             >
-              <Link href="/lawyers">Browse Lawyers</Link>
+              <Link href="/login">Browse Lawyers</Link>
             </Button>
           </div>
         </div>

@@ -48,6 +48,9 @@ export class Lawyer {
   @Column({ default: false })
   verified: boolean;
 
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  location: string;
+
   @OneToMany(() => Appointment, (appointment) => appointment.lawyer)
   appointments: Appointment[];
 

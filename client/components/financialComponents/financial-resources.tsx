@@ -9,163 +9,337 @@ import {
   Send,
 } from "lucide-react";
 
-const resourceCategories = [
-  {
-    title: "Banking Services",
-    icon: Building,
-    description: "Banks that welcome international clients",
-    resources: [
-      {
-        name: "Chase Bank",
-        description: "Offers accounts for new immigrants with ITIN",
-        features: ["No minimum balance", "Online banking", "Mobile app"],
-        link: "#",
-      },
-      {
-        name: "Bank of America",
-        description: "International student and professional accounts",
-        features: [
-          "Credit building",
-          "International transfers",
-          "Multiple locations",
-        ],
-        link: "#",
-      },
-      {
-        name: "Capital One",
-        description: "Credit cards for building U.S. credit history",
-        features: [
-          "No foreign transaction fees",
-          "Credit monitoring",
-          "Rewards program",
-        ],
-        link: "#",
-      },
-    ],
-  },
-  {
-    title: "Money Transfer",
-    icon: Send,
-    description: "Affordable remittance services",
-    resources: [
-      {
-        name: "Wise (formerly TransferWise)",
-        description: "Low-cost international money transfers",
-        features: ["Real exchange rates", "Low fees", "Fast transfers"],
-        link: "#",
-      },
-      {
-        name: "Remitly",
-        description: "Digital remittance service",
-        features: [
-          "Mobile app",
-          "Multiple payout options",
-          "Competitive rates",
-        ],
-        link: "#",
-      },
-    ],
-  },
-  {
-    title: "Credit Building",
-    icon: CreditCard,
-    description: "Build your U.S. credit history",
-    resources: [
-      {
-        name: "Secured Credit Cards",
-        description: "Build credit with a security deposit",
-        features: [
-          "No credit history required",
-          "Graduate to unsecured",
-          "Credit reporting",
-        ],
-        link: "#",
-      },
-      {
-        name: "Credit Monitoring",
-        description: "Track your credit score progress",
-        features: [
-          "Free credit scores",
-          "Identity monitoring",
-          "Credit alerts",
-        ],
-        link: "#",
-      },
-    ],
-  },
-  {
-    title: "Education Funding",
-    icon: GraduationCap,
-    description: "Scholarships and education loans",
-    resources: [
-      {
-        name: "International Student Loans",
-        description: "Private loans for international students",
-        features: [
-          "No cosigner required",
-          "Competitive rates",
-          "Flexible repayment",
-        ],
-        link: "#",
-      },
-      {
-        name: "Scholarship Database",
-        description: "Scholarships for international students",
-        features: ["Merit-based", "Need-based", "Country-specific"],
-        link: "#",
-      },
-    ],
-  },
-];
-
 export function FinancialResources() {
   return (
     <div className="space-y-8">
-      {resourceCategories.map((category) => (
-        <Card key={category.title}>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <category.icon className="h-5 w-5" />
-              <span>{category.title}</span>
-            </CardTitle>
-            <p className="text-muted-foreground">{category.description}</p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              {category.resources.map((resource) => (
-                <div key={resource.name} className="border rounded-lg p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold">{resource.name}</h4>
-                    <Button variant="ghost" size="sm" asChild>
-                      <a
-                        href={resource.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {resource.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {resource.features.map((feature) => (
-                      <Badge
-                        key={feature}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {feature}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              ))}
+      {/* Banking Services */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Building className="h-5 w-5" />
+            <span>Banking Services</span>
+          </CardTitle>
+          <p className="text-muted-foreground">
+            Banks that welcome international clients
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Chase Bank */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Chase Bank</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.chase.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Offers accounts for new immigrants with ITIN.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  No minimum balance
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Online banking
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Mobile app
+                </Badge>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      ))}
+            {/* Bank of America */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Bank of America</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.bankofamerica.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                International student and professional accounts.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  Credit building
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  International transfers
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Multiple locations
+                </Badge>
+              </div>
+            </div>
+            {/* Capital One */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Capital One</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.capitalone.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Credit cards for building U.S. credit history.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  No foreign transaction fees
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Credit monitoring
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Rewards program
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Money Transfer */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Send className="h-5 w-5" />
+            <span>Money Transfer</span>
+          </CardTitle>
+          <p className="text-muted-foreground">
+            Affordable remittance services
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Wise */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Wise (TransferWise)</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://wise.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Low-cost international money transfers.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  Real exchange rates
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Low fees
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Fast transfers
+                </Badge>
+              </div>
+            </div>
+            {/* Remitly */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Remitly</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.remitly.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Digital remittance service.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  Mobile app
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Multiple payout options
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Competitive rates
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Credit Building */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <CreditCard className="h-5 w-5" />
+            <span>Credit Building</span>
+          </CardTitle>
+          <p className="text-muted-foreground">
+            Build your U.S. credit history
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Secured Credit Cards */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Secured Credit Cards</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.experian.com/blogs/ask-experian/what-are-secured-credit-cards/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Build credit with a security deposit.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  No credit history required
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Graduate to unsecured
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Credit reporting
+                </Badge>
+              </div>
+            </div>
+            {/* Credit Monitoring */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Credit Monitoring</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.annualcreditreport.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Track your credit score progress.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  Free credit scores
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Identity monitoring
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Credit alerts
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Education Funding */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <GraduationCap className="h-5 w-5" />
+            <span>Education Funding</span>
+          </CardTitle>
+          <p className="text-muted-foreground">
+            Scholarships and education loans
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* International Student Loans */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">International Student Loans</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.internationalstudentloan.com/international_student"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Private loans for international students.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  No cosigner required
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Competitive rates
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Flexible repayment
+                </Badge>
+              </div>
+            </div>
+            {/* Scholarship Database */}
+            <div className="border rounded-lg p-4">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-semibold">Scholarship Database</h4>
+                <Button variant="ghost" size="sm" asChild>
+                  <a
+                    href="https://www.internationalscholarships.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Scholarships for international students.
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-xs">
+                  Merit-based
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Need-based
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Country-specific
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

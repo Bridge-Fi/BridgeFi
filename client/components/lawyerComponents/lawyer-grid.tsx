@@ -32,6 +32,7 @@ export function LawyerGrid() {
     (async () => {
       try {
         const data = await LawyerApi.getLawyers();
+
         if (data instanceof Error) {
           throw data;
         }
@@ -41,7 +42,7 @@ export function LawyerGrid() {
             id: l.id,
             fullName: l.fullName,
             firm: l.firmName, // adjust to your API field
-            location: `${l.city}, ${l.state}`,
+            location: l.location,
             experience: l.yearsOfExperience,
             rating: l.averageRating,
             reviews: l.reviewCount,

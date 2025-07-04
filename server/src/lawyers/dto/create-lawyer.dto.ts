@@ -6,6 +6,7 @@ export class CreateLawyerDto {
   legalExperience: string;
   education: string;
   barNumber: string;
+  location: string;
   visaSpecialties: string[];
   yearsOfExperience?: number;
   lawFirm?: string;

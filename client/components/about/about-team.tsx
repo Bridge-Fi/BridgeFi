@@ -1,17 +1,6 @@
-const team = [
-  {
-    name: "Anxhela Teli",
-    role: "Founder & CEO",
-    bio: "Former immigration attorney who experienced the system firsthand as an immigrant from Taiwan.",
-    image: "/avatar.jpeg",
-  },
-  {
-    name: "Arbes Avdiaj",
-    role: "Head of Legal Partnerships",
-    bio: "15+ years connecting immigrants with qualified legal representation across the United States.",
-    image: "/avatar.jpeg",
-  },
-];
+import Image from "next/image";
+import Anxhela from "@/public/images/anxhela.jpg";
+import Arbes from "@/public/images/arbes.jpg";
 
 export function AboutTeam() {
   return (
@@ -22,26 +11,52 @@ export function AboutTeam() {
             Meet Our Team
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            A diverse group of immigrants, lawyers, and technologists united by
-            a common mission.
+            A diverse group of professionals united by a common mission.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-          {team.map((member) => (
-            <div key={member.name} className="text-center">
-              <img
-                src={member.image || "/placeholder.svg"}
-                alt={member.name}
-                className="mx-auto h-48 w-48 rounded-full object-cover"
-              />
-              <h3 className="mt-6 text-xl font-semibold text-gray-900">
-                {member.name}
-              </h3>
-              <p className="text-primary font-medium">{member.role}</p>
-              <p className="mt-4 text-gray-600">{member.bio}</p>
-            </div>
-          ))}
+        <div className="flex justify-center gap-12">
+          {/* Anxhela Teli */}
+          <div className="text-center">
+            <Image
+              src={Anxhela}
+              alt="Anxhela Teli"
+              width={150}
+              height={150}
+              className="mx-auto rounded-full object-cover"
+            />
+            <h3 className="mt-6 text-xl font-semibold text-gray-900">
+              Anxhela Teli
+            </h3>
+            <p className="text-primary font-medium">CEO &amp; Co-Founder</p>
+            <p className="mt-4 text-gray-600">
+              Leads our company vision and strategy, driving growth through
+              innovation in immigration technology. She leverages her legal
+              expertise and entrepreneurial spirit to create accessible
+              solutions for users worldwide.
+            </p>
+          </div>
+
+          {/* Arbes Avdiaj */}
+          <div className="text-center">
+            <Image
+              src={Arbes}
+              alt="Arbes Avdiaj"
+              width={150}
+              height={150}
+              className="mx-auto rounded-full object-cover"
+            />
+            <h3 className="mt-6 text-xl font-semibold text-gray-900">
+              Arbes Avdiaj
+            </h3>
+            <p className="text-primary font-medium">CTO &amp; Co-Founder</p>
+            <p className="mt-4 text-gray-600">
+              Oversees our technology roadmap and architecture, ensuring robust
+              and scalable platform performance. With over 15 years of
+              experience in software development, he champions best practices
+              and drives technical innovation.
+            </p>
+          </div>
         </div>
       </div>
     </section>
