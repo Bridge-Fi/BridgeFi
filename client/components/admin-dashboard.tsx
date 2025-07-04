@@ -51,6 +51,7 @@ interface Lawyer {
   visaSpecialties: string[];
   yearsOfExperience?: number;
   lawFirm?: string;
+  location?: string;
   verified: boolean;
   createdAt: string;
 }
@@ -70,7 +71,9 @@ const LawyerSchema = Yup.object().shape({
     .required("Visa specialties are required"),
   yearsOfExperience: Yup.number().nullable(),
   lawFirm: Yup.string().nullable(),
+  location: Yup.string().required("Location is required"),
 });
+
 export function AdminDashboard() {
   const router = useRouter();
   const { toast } = useToast();
@@ -184,6 +187,7 @@ export function AdminDashboard() {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Firm</TableHead>
+                  <TableHead>Location</TableHead>
                   <TableHead>Verified</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -192,7 +196,7 @@ export function AdminDashboard() {
               <TableBody>
                 {loadingLawyers ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center">
+                    <TableCell colSpan={6} className="text-center">
                       <Loader2 className="animate-spin h-6 w-6" />
                     </TableCell>
                   </TableRow>
@@ -202,6 +206,7 @@ export function AdminDashboard() {
                       <TableCell>{l.fullName}</TableCell>
                       <TableCell>{l.email}</TableCell>
                       <TableCell>{l.lawFirm}</TableCell>
+                      <TableCell>{l.location}</TableCell>
                       <TableCell>
                         <Switch
                           checked={l.verified}
@@ -247,7 +252,7 @@ export function AdminDashboard() {
           </Card>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingLawyer ? "Edit Lawyer" : "New Lawyer"}
@@ -264,8 +269,9 @@ export function AdminDashboard() {
                   education: editingLawyer?.education || "",
                   barNumber: editingLawyer?.barNumber || "",
                   visaSpecialties: editingLawyer?.visaSpecialties || [],
-                  yearsOfExperience: editingLawyer?.yearsOfExperience || 0,
+                  yearsOfExperience: editingLawyer?.yearsOfExperience || "",
                   lawFirm: editingLawyer?.lawFirm || "",
+                  location: editingLawyer?.location || "",
                   verified: editingLawyer?.verified || false,
                 }}
                 validationSchema={LawyerSchema}
@@ -277,7 +283,11 @@ export function AdminDashboard() {
                   <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label>Full Name</Label>
-                      <Field name="fullName" className="form-input" />
+                      <Field
+                        as={Input}
+                        name="fullName"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                       <ErrorMessage
                         name="fullName"
                         component="div"
@@ -287,7 +297,12 @@ export function AdminDashboard() {
 
                     <div>
                       <Label>Email</Label>
-                      <Field name="email" type="email" className="form-input" />
+                      <Field
+                        as={Input}
+                        name="email"
+                        type="email"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                       <ErrorMessage
                         name="email"
                         component="div"
@@ -299,9 +314,10 @@ export function AdminDashboard() {
                       <div>
                         <Label>Password</Label>
                         <Field
+                          as={Input}
                           name="password"
                           type="password"
-                          className="form-input"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                         <ErrorMessage
                           name="password"
@@ -313,7 +329,11 @@ export function AdminDashboard() {
 
                     <div>
                       <Label>Phone Number</Label>
-                      <Field name="phoneNumber" className="form-input" />
+                      <Field
+                        as={Input}
+                        name="phoneNumber"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                       <ErrorMessage
                         name="phoneNumber"
                         component="div"
@@ -322,12 +342,30 @@ export function AdminDashboard() {
                     </div>
 
                     <div>
-                      <Label>Legal Experience</Label>
+                      <Label>Location (US State/City)</Label>
                       <Field
-                        name="legalExperience"
-                        as="textarea"
-                        className="form-textarea"
+                        as={Input}
+                        name="location"
+                        placeholder="e.g., New York, NY"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
+                      <ErrorMessage
+                        name="location"
+                        component="div"
+                        className="text-red-500 text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Legal Experience</Label>
+                      <Field name="legalExperience">
+                        {({ field }: any) => (
+                          <Textarea
+                            {...field}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] bg-white text-gray-900 resize-none"
+                          />
+                        )}
+                      </Field>
                       <ErrorMessage
                         name="legalExperience"
                         component="div"
@@ -337,11 +375,14 @@ export function AdminDashboard() {
 
                     <div>
                       <Label>Education</Label>
-                      <Field
-                        name="education"
-                        as="textarea"
-                        className="form-textarea"
-                      />
+                      <Field name="education">
+                        {({ field }: any) => (
+                          <Textarea
+                            {...field}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] bg-white text-gray-900 resize-none"
+                          />
+                        )}
+                      </Field>
                       <ErrorMessage
                         name="education"
                         component="div"
@@ -351,7 +392,11 @@ export function AdminDashboard() {
 
                     <div>
                       <Label>Bar Number</Label>
-                      <Field name="barNumber" className="form-input" />
+                      <Field
+                        as={Input}
+                        name="barNumber"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                       <ErrorMessage
                         name="barNumber"
                         component="div"
@@ -361,7 +406,7 @@ export function AdminDashboard() {
 
                     <div>
                       <Label>Visa Specialties</Label>
-                      <div className="grid grid-cols-2 gap-2 p-2 border rounded">
+                      <div className="grid grid-cols-2 gap-2 p-2 border border-gray-300 rounded-md bg-white">
                         {[
                           "F1",
                           "H1B",
@@ -381,9 +426,11 @@ export function AdminDashboard() {
                               type="checkbox"
                               name="visaSpecialties"
                               value={type}
-                              className="h-4 w-4"
+                              className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                             />
-                            <span className="text-sm">{type}</span>
+                            <span className="text-sm text-gray-900">
+                              {type}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -397,24 +444,29 @@ export function AdminDashboard() {
                     <div>
                       <Label>Years of Experience</Label>
                       <Field
+                        as={Input}
                         name="yearsOfExperience"
                         type="number"
-                        className="form-input"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
 
                     <div>
                       <Label>Law Firm</Label>
-                      <Field name="lawFirm" className="form-input" />
+                      <Field
+                        as={Input}
+                        name="lawFirm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
                     </div>
 
                     <div className="flex items-center space-x-2">
                       <Field
                         name="verified"
                         type="checkbox"
-                        className="h-4 w-4"
+                        className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                       />
-                      <Label>Verified</Label>
+                      <Label className="text-gray-900">Verified</Label>
                     </div>
 
                     <div className="md:col-span-2 flex justify-end space-x-2">

@@ -7,11 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const inputVariants = cva(
-  "flex h-10 w-full bg-white rounded-md border px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+  "flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-white",
+        default: "bg-white text-foreground border-gray-300",
+        outline:
+          "bg-white text-foreground border-gray-300 hover:border-gray-400",
+        filled: "bg-gray-50 text-foreground border-gray-200 hover:bg-white",
       },
       size: {
         default: "h-10",
@@ -40,7 +43,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const Comp = asChild ? Slot : "input";
     return (
       <Comp
-        className={cn(inputVariants({ variant, size: variantSize, className }))}
+        className={cn(inputVariants({ variant, size: variantSize }), className)}
         ref={ref}
         {...props}
       />

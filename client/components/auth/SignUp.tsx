@@ -106,7 +106,7 @@ export default function SignUpPage() {
                   <Field
                     name="firstName"
                     placeholder="Enter your first name"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white text-black"
                   />
                   <ErrorMessage
                     name="firstName"
@@ -125,7 +125,7 @@ export default function SignUpPage() {
                   <Field
                     name="lastName"
                     placeholder="Enter your last name"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white text-black"
                   />
                   <ErrorMessage
                     name="lastName"
@@ -145,7 +145,7 @@ export default function SignUpPage() {
                     name="email"
                     type="email"
                     placeholder="Enter your email"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white text-black"
                   />
                   <ErrorMessage
                     name="email"
@@ -166,7 +166,7 @@ export default function SignUpPage() {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10 bg-white text-black"
                     />
                     <button
                       type="button"

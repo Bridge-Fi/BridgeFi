@@ -86,7 +86,7 @@ export default function LawyerLogin() {
                     name="email"
                     type="email"
                     placeholder="you@example.com"
-                    className="form-input mt-1 w-full"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white text-black"
                   />
                   <ErrorMessage
                     name="email"
@@ -107,12 +107,12 @@ export default function LawyerLogin() {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
-                      className="form-input w-full pr-10"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10 bg-white text-black"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>

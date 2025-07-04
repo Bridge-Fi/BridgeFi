@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Calendar, Clock, MessageSquare } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import * as Yup from "yup";
 import { LawyerApi } from "@/app/api/LawyerApi";
@@ -88,13 +88,20 @@ export function BookingDialog({ lawyerId, children }: BookingDialogProps) {
             {({ isSubmitting }) => (
               <Form className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date</label>
+                  <label className="text-sm font-medium mb-1 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Date
+                  </label>
                   <Field name="date">
                     {({ field }: FieldProps) => (
                       <input
                         type="date"
                         {...field}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded bg-white text-black cursor-pointer"
+                        style={{
+                          colorScheme: "light",
+                        }}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
                         disabled={isSubmitting}
                       />
                     )}
@@ -106,13 +113,20 @@ export function BookingDialog({ lawyerId, children }: BookingDialogProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Time</label>
+                  <label className="text-sm font-medium mb-1 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Time
+                  </label>
                   <Field name="time">
                     {({ field }: FieldProps) => (
                       <input
                         type="time"
                         {...field}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded bg-white text-black cursor-pointer"
+                        style={{
+                          colorScheme: "light",
+                        }}
+                        onClick={(e) => e.currentTarget.showPicker?.()}
                         disabled={isSubmitting}
                       />
                     )}
@@ -124,13 +138,14 @@ export function BookingDialog({ lawyerId, children }: BookingDialogProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="text-sm font-medium mb-1 flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
                     Inquiry
                   </label>
                   <Field
                     as="textarea"
                     name="inquiry"
-                    className="w-full p-2 border rounded h-24"
+                    className="w-full p-2 border rounded h-24 bg-white text-black"
                     disabled={isSubmitting}
                   />
                   <ErrorMessage
