@@ -4,54 +4,55 @@ import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Calendar, Award } from "lucide-react";
-import { Loader2 } from "lucide-react";
+import { Star, MapPin, Calendar, Award, Loader2 } from "lucide-react";
 import { LawyerApi } from "@/app/api/LawyerApi";
 import { BookingDialog } from "../BookingDialog";
 
-interface Lawyer {
+interface RawLawyer {
   id: number;
-  fullName: string;
-  firm: string;
-  location: string;
-  experience: number;
-  rating: number;
-  reviews: number;
-  barNumber: string;
-  specializations: string[];
+  fullName?: string;
+  firmName?: string;
+  location?: string;
+  yearsOfExperience?: number;
+  averageRating?: number;
+  reviewCount?: number;
+  barNumber?: string;
+  visaSpecialties?: string[];
   imageUrl?: string;
-  consultationFee: number;
+  consultationFee?: number;
 }
 
-export function LawyerGrid() {
-  const [lawyers, setLawyers] = useState<Lawyer[]>([]);
-  const [loading, setLoading] = useState(true);
+interface LawyerGridProps {
+  searchTerm: string;
+  locationTerm: string;
+  specTerm: string;
+}
+
+export function LawyerGrid({
+  searchTerm,
+  locationTerm,
+  specTerm,
+}: LawyerGridProps) {
+  const [lawyers, setLawyers] = useState<RawLawyer[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       try {
         const data = await LawyerApi.getLawyers();
+        if (data instanceof Error) throw data;
 
-        if (data instanceof Error) {
-          throw data;
+        // Debug: Log the entire response
+        console.log("Full API response:", data);
+
+        // Debug: Check if imageUrl field exists in the first lawyer
+        if (data.length > 0) {
+          console.log("First lawyer object:", data[0]);
+          console.log("imageUrl field:", data[0].imageUrl);
         }
-        // map your API’s shape into the grid’s props if needed
-        setLawyers(
-          data.map((l: any) => ({
-            id: l.id,
-            fullName: l.fullName,
-            firm: l.firmName, // adjust to your API field
-            location: l.location,
-            experience: l.yearsOfExperience,
-            rating: l.averageRating,
-            reviews: l.reviewCount,
-            barNumber: l.barNumber,
-            specializations: l.visaSpecialties,
-            imageUrl: l.photoUrl, // or fallback avatar
-            consultationFee: l.consultationFee,
-          }))
-        );
+
+        setLawyers(data);
       } catch (err: any) {
         console.error(err);
         setError("Failed to load lawyers.");
@@ -68,38 +69,57 @@ export function LawyerGrid() {
       </div>
     );
   }
-
   if (error) {
     return <div className="w-full text-center text-red-500 py-20">{error}</div>;
   }
 
+  // apply three filters with safe defaults
+  const filtered = lawyers.filter((l) => {
+    const nameLower = (l.fullName ?? "").toLowerCase();
+    const firmLower = (l.firmName ?? "").toLowerCase();
+    const locLower = (l.location ?? "").toLowerCase();
+    const specsLower = (l.visaSpecialties ?? []).map((s) =>
+      (s ?? "").toLowerCase()
+    );
+
+    const matchesNameOrFirm =
+      nameLower.includes(searchTerm.toLowerCase()) ||
+      firmLower.includes(searchTerm.toLowerCase());
+
+    const matchesLocation = locLower.includes(locationTerm.toLowerCase());
+
+    const matchesSpec = specsLower.some((s) =>
+      s.includes(specTerm.toLowerCase())
+    );
+
+    return matchesNameOrFirm && matchesLocation && matchesSpec;
+  });
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {lawyers.map((lawyer) => (
-        <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
+      {filtered.map((l) => (
+        <Card key={l.id} className="hover:shadow-lg transition-shadow">
           <CardHeader className="pb-4">
             <div className="flex items-start space-x-4">
               <img
-                src={lawyer.imageUrl ?? "/placeholder.svg"}
-                alt={lawyer.fullName}
+                src={l.imageUrl ?? "/placeholder.svg"}
+                alt={l.fullName}
                 className="h-16 w-16 rounded-full object-cover"
               />
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-lg truncate">
-                  {lawyer.fullName}
-                </h3>
+                <h3 className="font-semibold text-lg truncate">{l.fullName}</h3>
                 <p className="text-sm text-muted-foreground truncate">
-                  {lawyer.firm}
+                  {l.firmName}
                 </p>
                 <div className="flex items-center mt-1">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="text-sm font-medium ml-1">
-                    {typeof lawyer.rating === "number"
-                      ? lawyer.rating.toFixed(1)
+                    {typeof l.averageRating === "number"
+                      ? l.averageRating.toFixed(1)
                       : "—"}
                   </span>
                   <span className="text-sm text-muted-foreground ml-1">
-                    ({lawyer.reviews ?? 0})
+                    ({l.reviewCount ?? 0})
                   </span>
                 </div>
               </div>
@@ -109,35 +129,37 @@ export function LawyerGrid() {
           <CardContent className="space-y-4">
             <div className="flex items-center text-sm text-muted-foreground">
               <MapPin className="h-4 w-4 mr-1" />
-              {lawyer.location}
+              {l.location}
             </div>
-
             <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="h-4 w-4 mr-1" />
-              {lawyer.experience} years
+              {l.yearsOfExperience} years
             </div>
-
             <div className="flex items-center text-sm text-muted-foreground">
               <Award className="h-4 w-4 mr-1" />
-              Bar #: {lawyer.barNumber}
+              Bar #: {l.barNumber}
             </div>
-
             <div className="flex flex-wrap gap-1">
-              {lawyer.specializations.map((spec) => (
+              {(l.visaSpecialties ?? []).map((spec) => (
                 <Badge key={spec} variant="secondary" className="text-xs">
                   {spec}
                 </Badge>
               ))}
             </div>
-
             <div className="pt-2 border-t">
-              <BookingDialog lawyerId={lawyer.id}>
+              <BookingDialog lawyerId={l.id}>
                 <Button className="w-full">Contact Lawyer</Button>
               </BookingDialog>
             </div>
           </CardContent>
         </Card>
       ))}
+
+      {filtered.length === 0 && (
+        <p className="col-span-full text-center text-muted-foreground">
+          No lawyers found matching your criteria.
+        </p>
+      )}
     </div>
   );
 }

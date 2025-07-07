@@ -15,7 +15,7 @@ const services = [
       "Deportation defense",
     ],
     cta: "Find Lawyers",
-    href: "/lawyers",
+    href: "/login",
   },
   {
     name: "Employment Hub",
@@ -29,7 +29,7 @@ const services = [
       "Startup visa programs",
     ],
     cta: "Browse Jobs",
-    href: "/employers",
+    href: "/login",
   },
   {
     name: "Financial Resources",
@@ -43,7 +43,7 @@ const services = [
       "Funding resources",
     ],
     cta: "Explore Resources",
-    href: "/financial",
+    href: "/login",
   },
 ];
 

@@ -1,7 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { LawyerSearch } from "@/components/lawyerComponents/lawyer-search";
 import { LawyerGrid } from "@/components/lawyerComponents/lawyer-grid";
 
 export default function LawyersPage() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [locationTerm, setLocationTerm] = useState<string>("");
+  const [specTerm, setSpecTerm] = useState<string>("");
+
   return (
     <div className="container py-8">
       <div className="mb-8">
@@ -14,8 +21,20 @@ export default function LawyersPage() {
         </p>
       </div>
 
-      <LawyerSearch />
-      <LawyerGrid />
+      <LawyerSearch
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        locationTerm={locationTerm}
+        onLocationChange={setLocationTerm}
+        specTerm={specTerm}
+        onSpecChange={setSpecTerm}
+      />
+
+      <LawyerGrid
+        searchTerm={searchTerm}
+        locationTerm={locationTerm}
+        specTerm={specTerm}
+      />
     </div>
   );
 }
