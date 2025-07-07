@@ -36,6 +36,7 @@ import {
   User,
   XCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // Create a simple toast hook if it doesn't exist
@@ -75,6 +76,7 @@ interface UserAppointment {
 
 export default function MyAppointmentsSection() {
   const { toast } = useToast();
+  const router = useRouter();
   const [appointments, setAppointments] = useState<UserAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<UserAppointment | null>(null);
@@ -339,7 +341,7 @@ export default function MyAppointmentsSection() {
                         </p>
                         <Button
                           onClick={() => {
-                            /* booking logic */
+                            router.push("/lawyer");
                           }}
                         >
                           <Plus className="h-4 w-4 mr-2" />
